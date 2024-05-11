@@ -21,7 +21,7 @@ namespace Elements
         public static Element Frost => _frost;
         public static Element Electric => _electric;
 
-        [RuntimeInitializeOnLoadMethod]
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         private static void Init()
         {
             _fire = Resources.Load<Element>("Elements/Fire Element");

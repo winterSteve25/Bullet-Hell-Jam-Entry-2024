@@ -7,27 +7,34 @@ namespace Elements
         public static void React(ElementObject a, ElementObject b)
         {
             if (b.ReactionPriority > a.ReactionPriority) return;
-            bool can = true;
             
             if (a.element.IsEmpty())
             {
                 a.element.Set(b.element);
                 b.element.Empty();
-                can = false;
+            } else if (b.element.IsEmpty())
+            {
+                b.element.Set(a.element);
+                a.element.Empty();
             }
 
-            React(a.element, b, can);
+            ReactInternal(b.element, a);
             Debug.Log("A: " + a);
             Debug.Log("B: " + b);
         }
 
-        public static void React(ElementStack a, ElementObject b, bool f = true)
+        private static void ReactInternal(ElementStack a, ElementObject b)
         {
-            if (f && b.element.IsEmpty())
+            if (b.element.element == a.element)
             {
-                b.element.Set(a);
+                b.element.amount += a.amount;
                 a.Empty();
             }
+        }
+
+        public static void React(ElementStack a, ElementObject b)
+        {
+            ReactInternal(a, b);
         }
     }
 }

@@ -33,7 +33,8 @@ namespace Projectiles
                 _renderer.sprite = sprite;
 
             _position = position;
-            _element = element;
+            _element = new ElementStack();
+            _element.Set(element);
             _onDestroy = onDestroy;
             _speed = speed;
             _elapsedTime = 0;

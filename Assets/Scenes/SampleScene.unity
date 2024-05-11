@@ -1231,8 +1231,8 @@ MonoBehaviour:
   reactionPriority: 100000000
   hp: 10
   element:
-    element: {fileID: 0}
-    amount: 0
+    element: {fileID: 11400000, guid: daca028955009824cb27eb28b0459f32, type: 2}
+    amount: 10
 --- !u!114 &202524466
 MonoBehaviour:
   m_ObjectHideFlags: 0

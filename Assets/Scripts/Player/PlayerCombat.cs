@@ -11,7 +11,13 @@ namespace Player
         {
             if (GameInput.LeftClickButtonDown())
             {
-                ProjectileManager.Instance.Spawn(transform.position, Positioner.Polar(), (currPos, _) => (currPos - transform.position).normalized, new ElementStack(), amount: 3);
+                ProjectileManager.Instance.Spawn(
+                    transform.position,
+                    Positioner.Polar(),
+                    (currPos, _) => (currPos - transform.position).normalized,
+                    new ElementStack(Element.Fire, 10),
+                    amount: 3
+                );
             }
         }
     }
