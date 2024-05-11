@@ -1,3 +1,4 @@
+using Elements;
 using Projectiles;
 using UnityEngine;
 using Utils;
@@ -10,7 +11,7 @@ namespace Player
         {
             if (GameInput.LeftClickButtonDown())
             {
-                ProjectileManager.Instance.Spawn(transform.position, Positioner.Polar(), (currPos, _) => (currPos - transform.position).normalized, amount: 3);
+                ProjectileManager.Instance.Spawn(transform.position, Positioner.Polar(), (currPos, _) => (currPos - transform.position).normalized, new ElementStack(), amount: 3);
             }
         }
     }

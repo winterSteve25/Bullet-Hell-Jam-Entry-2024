@@ -24,6 +24,10 @@ namespace Elements
         [RuntimeInitializeOnLoadMethod]
         private static void Init()
         {
+            _fire = Resources.Load<Element>("Elements/Fire Element");
+            _water = Resources.Load<Element>("Elements/Water Element");
+            _frost = Resources.Load<Element>("Elements/Frost Element");
+            _electric = Resources.Load<Element>("Elements/Electric Element");
         }
     }
 }
