@@ -10,7 +10,7 @@ namespace Player
         {
             if (GameInput.LeftClickButtonDown())
             {
-                ProjectileManager.Instance.Spawn(transform.position, new Vector2(0.1f, 0), 200);
+                ProjectileManager.Instance.Spawn(transform.position, Positioner.Polar(), (currPos, _) => (currPos - transform.position).normalized, amount: 3);
             }
         }
     }

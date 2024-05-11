@@ -1,4 +1,4 @@
-using System;
+using Elements;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -8,9 +8,8 @@ namespace Projectiles
     {
         private static ProjectileManager _instance;
         public static ProjectileManager Instance => _instance;
-        
-        [SerializeField] private Projectile prefab;
 
+        [SerializeField] private Projectile prefab;
         private ObjectPool<Projectile> _projectiles;
 
         private void Awake()
@@ -36,18 +35,21 @@ namespace Projectiles
             );
         }
 
-        public void Spawn(Vector2 position, Vector2 offset, int amount)
+        public void Spawn(
+            Vector3 position,
+            Positioner.Position offset,
+            Positioner.Position positioner,
+            ElementStack element,
+            int amount = 5,
+            float speed = 1f
+        )
         {
             for (int i = 0; i < amount; i++)
             {
                 Projectile projectile = _projectiles.Get();
-                projectile.Init(position + offset * amount, Directional(Vector2.up), 5f, o => _projectiles.Release(o));
+                projectile.transform.position = position + offset(position, i);
+                projectile.Init(positioner, speed, element, o => _projectiles.Release(o));
             }
-        }
-
-        public Func<float, Vector2, Vector2> Directional(Vector2 dir)
-        {
-            return (_, currPos) => currPos + dir;
         }
     }
 }

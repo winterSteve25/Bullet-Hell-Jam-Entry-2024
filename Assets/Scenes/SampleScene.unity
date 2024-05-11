@@ -137,12 +137,12 @@ GameObject:
   - component: {fileID: 17999108}
   - component: {fileID: 17999110}
   - component: {fileID: 17999109}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Walls
-  m_TagString: Untagged
+  m_TagString: Walls
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &17999105
 Transform:
@@ -199,7 +199,7 @@ TilemapRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 1499940457
   m_SortingLayer: -1
-  m_SortingOrder: 0
+  m_SortingOrder: 5
   m_ChunkSize: {x: 32, y: 32, z: 32}
   m_ChunkCullingBounds: {x: 0, y: 0, z: 0}
   m_MaxChunkCount: 16
@@ -1054,7 +1054,7 @@ GameObject:
   - component: {fileID: 202524465}
   - component: {fileID: 202524462}
   - component: {fileID: 202524466}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1167,7 +1167,7 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_SleepingMode: 1
   m_CollisionDetection: 0
   m_Constraints: 0
@@ -1231,8 +1231,8 @@ MonoBehaviour:
   reactionPriority: 100000000
   hp: 10
   element:
-    element: {fileID: 11400000, guid: 7deef9007af4ce34a8ed1fe77d708cf9, type: 2}
-    amount: 10
+    element: {fileID: 0}
+    amount: 0
 --- !u!114 &202524466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1256,12 +1256,12 @@ GameObject:
   - component: {fileID: 372270632}
   - component: {fileID: 372270635}
   - component: {fileID: 372270634}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Floors
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!4 &372270632
 Transform:
@@ -16975,7 +16975,7 @@ MonoBehaviour:
   m_ShowCameraFrustum: 1
   m_IgnoreTimeScale: 0
   m_WorldUpOverride: {fileID: 0}
-  m_UpdateMethod: 0
+  m_UpdateMethod: 1
   m_BlendUpdateMethod: 1
   m_DefaultBlend:
     m_Style: 1
@@ -17245,12 +17245,12 @@ GameObject:
   m_Component:
   - component: {fileID: 1515086002}
   - component: {fileID: 1515086001}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: Grid
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!156049354 &1515086001
 Grid:
@@ -17293,7 +17293,7 @@ GameObject:
   - component: {fileID: 1576103049}
   - component: {fileID: 1576103048}
   - component: {fileID: 1576103051}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Barrel
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -8,6 +8,16 @@ namespace Elements
         public Element element;
         public float amount;
 
+        public ElementStack()
+        {
+        }
+
+        public ElementStack(Element element, float amount)
+        {
+            this.element = element;
+            this.amount = amount;
+        }
+
         public void Empty()
         {
             element = null;
