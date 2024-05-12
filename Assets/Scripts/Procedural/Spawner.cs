@@ -1,46 +1,38 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-public class Spawner : MonoBehaviour
+namespace Procedural
 {
-    public RoomManager roomManager;
-    int spawnLimits;
+    public class Spawner : MonoBehaviour
+    {
+        public RoomManager roomManager;
+        private int _spawnLimits;
 
-    void Start()
-    {
-        spawnLimits = roomManager.RoomLimits;
-    }
-    public void Spawn(int dir, Vector2 pos)
-    {
-        Debug.Log("Spawning");
-        if(roomManager.RoomLimits > 0)
+        private void Start()
         {
-            Debug.Log("Spawning " + dir);
-            GameObject spawnableRoom;
-            switch (dir)
+            _spawnLimits = roomManager.roomLimits;
+        }
+
+        public void Spawn(int dir, Vector2 pos)
+        {
+            Debug.Log("Spawning");
+            if (roomManager.roomLimits > 0)
             {
-                case 0:
-                    spawnableRoom = roomManager.obj_DownRooms[Random.Range(0, roomManager.obj_UpRooms.Length)];
-                    break;
-                case 1:
-                    spawnableRoom = roomManager.obj_RightRooms[Random.Range(0, roomManager.obj_LeftRooms.Length)];
-                    break;
-                case 2:
-                    spawnableRoom = roomManager.obj_UpRooms[Random.Range(0, roomManager.obj_DownRooms.Length)];
-                    break;
-                case 3:
-                    spawnableRoom = roomManager.obj_LeftRooms[Random.Range(0, roomManager.obj_RightRooms.Length)];
-                    break;
-                default:
-                    spawnableRoom = null;
-                break;
+                Debug.Log("Spawning " + dir);
+                GameObject spawnableRoom = dir switch
+                {
+                    0 => roomManager.objDownRooms[Random.Range(0, roomManager.objUpRooms.Length)],
+                    1 => roomManager.objRightRooms[Random.Range(0, roomManager.objLeftRooms.Length)],
+                    2 => roomManager.objUpRooms[Random.Range(0, roomManager.objDownRooms.Length)],
+                    3 => roomManager.objLeftRooms[Random.Range(0, roomManager.objRightRooms.Length)],
+                    _ => null
+                };
+                Instantiate(spawnableRoom, pos, Quaternion.identity);
+                roomManager.roomLimits--;
             }
-            Instantiate(spawnableRoom, pos, Quaternion.identity);
-            roomManager.RoomLimits--;
-        }else
-        {
-            Instantiate(roomManager.obj_FullRoom, pos, Quaternion.identity);
+            else
+            {
+                Instantiate(roomManager.objFullRoom, pos, Quaternion.identity);
+            }
         }
     }
 }

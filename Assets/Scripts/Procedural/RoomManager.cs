@@ -1,80 +1,42 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UIElements;
 
-public class RoomManager : MonoBehaviour
+namespace Procedural
 {
-    public GameObject[] obj_UpRooms;
-    public GameObject[] obj_DownRooms;
-    public GameObject[] obj_LeftRooms;
-    public GameObject[] obj_RightRooms;
-    public GameObject[] obj_AllRooms;
-    public int RoomLimits = 0;
-    public GameObject obj_FullRoom;
-
-    public static Vector2 DirCheck(int DirID)
+    public class RoomManager : MonoBehaviour
     {
-        switch (DirID)
+        public GameObject[] objUpRooms;
+        public GameObject[] objDownRooms;
+        public GameObject[] objLeftRooms;
+        public GameObject[] objRightRooms;
+        public GameObject[] objAllRooms;
+        public int roomLimits;
+        public GameObject objFullRoom;
+
+        public static bool IsLength(Vector3Int check)
         {
-            case 0:
-                return new Vector2(0, 1);
-            case 1:
-                return new Vector2(-1, 0);
-            case 2:
-                return new Vector2(0, -1);
-            case 3:
-                return new Vector2(1, 0);
-            default:
-                return new Vector2(0, 0);
+            return check.x != 0;
         }
-    }
 
-    public static Vector3Int DirCheckVec3Int(int DirID)
-    {
-        switch (DirID)
+        public static Vector3Int[] CornersPos(Vector3Int startPos, int length, int height)
         {
-            case 0:
-                return new Vector3Int(0, 1, 0);
-            case 1:
-                return new Vector3Int(-1, 0, 0);
-            case 2:
-                return new Vector3Int(0, -1, 0);
-            case 3:
-                return new Vector3Int(1, 0, 0);
-            default:
-                return new Vector3Int(0, 0, 0);
+            Vector3Int[] corners = new Vector3Int[4];
+            corners[0] = new Vector3Int(startPos.x, startPos.y);
+            corners[1] = new Vector3Int(startPos.x, startPos.y - height);
+            corners[2] = new Vector3Int(startPos.x + length, startPos.y - height);
+            corners[3] = new Vector3Int(startPos.x + length, startPos.y);
+            return corners;
         }
-    }
 
-    public static bool IsLength(Vector3Int check)
-    {
-        return check.x != 0;
-    }
-
-    public static Vector3Int[] CornersPos(Vector3Int startPos, int length, int height)
-    {
-        Vector3Int[] Corners = new Vector3Int[4];
-        Corners[0] = new Vector3Int(startPos.x, startPos.y);
-        Corners[1] = new Vector3Int(startPos.x, startPos.y - height);
-        Corners[2] = new Vector3Int(startPos.x + length, startPos.y - height);
-        Corners[3] = new Vector3Int(startPos.x + length, startPos.y);
-        return Corners;
-    }
-    public static Vector3Int RandomPlacement(int DirID, Vector3Int[] Corners)
-    {
-        switch (DirID)
+        public static Vector3Int RandomPlacement(int dirID, Vector3Int[] corners)
         {
-            case 0:
-                return new Vector3Int(Random.Range(Corners[0].x+1,Corners[3].x-1), Corners[0].y);
-            case 1:
-                return new Vector3Int(Corners[0].x, Random.Range(Corners[1].y+1,Corners[0].y-1));
-            case 2:
-                return new Vector3Int(Random.Range(Corners[1].x+1,Corners[2].x-1), Corners[1].y+1);
-            case 3:
-                return new Vector3Int(Corners[3].x-1, Random.Range(Corners[2].y+1,Corners[3].y-1));
-            default:
-                return new Vector3Int(0, 0, 0);
+            return dirID switch
+            {
+                0 => new Vector3Int(Random.Range(corners[0].x + 1, corners[3].x - 1), corners[0].y),
+                1 => new Vector3Int(corners[0].x, Random.Range(corners[1].y + 1, corners[0].y - 1)),
+                2 => new Vector3Int(Random.Range(corners[1].x + 1, corners[2].x - 1), corners[1].y + 1),
+                3 => new Vector3Int(corners[3].x - 1, Random.Range(corners[2].y + 1, corners[3].y - 1)),
+                _ => new Vector3Int(0, 0, 0)
+            };
         }
     }
 }
