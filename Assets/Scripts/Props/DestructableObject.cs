@@ -1,17 +1,16 @@
-using System;
-using Elements;
 using UnityEngine;
+using Utils;
 
 namespace Props
 {
-    [RequireComponent(typeof(ElementObject))]
+    [RequireComponent(typeof(HitPoints))]
     public class DestructableObject : MonoBehaviour
     {
-        private ElementObject _obj;
+        private HitPoints _obj;
 
         private void OnEnable()
         {
-            _obj = GetComponent<ElementObject>();
+            _obj = GetComponent<HitPoints>();
             _obj.OnDeath += OnDeath;
         }
 

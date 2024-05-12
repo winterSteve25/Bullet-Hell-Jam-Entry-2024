@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8120390f45b4e1da505826b9065119e, type: 3}
-  m_Name: Water Element
+  m_Name: Steam
   m_EditorClassIdentifier: 
-  icon: {fileID: -1616606257, guid: 69180105c89855f4e94ad8b416f68a25, type: 3}
-  displayName: Water
+  icon: {fileID: 0}
+  displayName: Steam
