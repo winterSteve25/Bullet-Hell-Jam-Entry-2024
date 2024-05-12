@@ -1,5 +1,5 @@
 using System;
-using Elements;
+using Effects;
 using Player;
 using UnityEngine;
 
@@ -10,7 +10,8 @@ namespace Projectiles
         private SpriteRenderer _renderer;
         private float _elapsedTime;
 
-        private ElementStack _element;
+        private Effect _effect;
+        private float _effAmount;
         private Positioner.Position _position;
         private Action<Projectile> _onDestroy;
         private float _speed;
@@ -26,7 +27,8 @@ namespace Projectiles
         public void Init(
             Positioner.Position position,
             float speed,
-            ElementStack element,
+            Effect effect,
+            float effAmount,
             Action<Projectile> onDestroy,
             int graceLayerMask,
             Sprite sprite = null
@@ -36,8 +38,8 @@ namespace Projectiles
                 _renderer.sprite = sprite;
 
             _position = position;
-            _element = new ElementStack();
-            _element.Set(element);
+            _effect = effect;
+            _effAmount = effAmount;
             _onDestroy = onDestroy;
             _graceLayerMask = graceLayerMask;
             _speed = speed;
@@ -82,9 +84,9 @@ namespace Projectiles
                     return;
                 }
 
-                if (!col.gameObject.TryGetComponent(out ElementObject obj)) continue;
+                if (!col.gameObject.TryGetComponent(out EffectObject obj)) continue;
                 
-                Reaction.React(_element, obj);
+                obj.Apply(_effect, _effAmount, true);
                 obj.Hp -= 1; 
                 
                 _onDestroy(this);

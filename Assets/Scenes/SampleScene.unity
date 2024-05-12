@@ -449,7 +449,7 @@ Transform:
   m_GameObject: {fileID: 132802886}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -1.0710386, y: -0.34416518, z: 0.00135008}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -470,6 +470,7 @@ GameObject:
   - component: {fileID: 202524465}
   - component: {fileID: 202524462}
   - component: {fileID: 202524466}
+  - component: {fileID: 202524467}
   m_Layer: 6
   m_Name: Player
   m_TagString: Untagged
@@ -644,11 +645,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17411cecf24c4def8419bb4b5a619a16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reactionPriority: 100000000
-  hp: 10
-  element:
-    element: {fileID: 11400000, guid: daca028955009824cb27eb28b0459f32, type: 2}
-    amount: 10
+  effects:
+    m_keys: []
+    m_values: []
 --- !u!114 &202524466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -662,6 +661,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 519420031}
+--- !u!114 &202524467
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 202524459}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07bb406b82de40ab8d3f99f859f4caf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 3
 --- !u!1 &372270631
 GameObject:
   m_ObjectHideFlags: 0
@@ -16711,6 +16723,8 @@ GameObject:
   - component: {fileID: 1576103048}
   - component: {fileID: 1576103051}
   - component: {fileID: 1576103052}
+  - component: {fileID: 1576103053}
+  - component: {fileID: 1576103054}
   m_Layer: 3
   m_Name: Barrel
   m_TagString: Untagged
@@ -16842,11 +16856,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 17411cecf24c4def8419bb4b5a619a16, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  reactionPriority: 0
-  hp: 1
-  element:
-    element: {fileID: 0}
-    amount: 0
+  effects:
+    m_keys: []
+    m_values: []
 --- !u!114 &1576103052
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -16859,6 +16871,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601a7135ef7941bfad7ad5b056e4b7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1576103053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576103047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 07bb406b82de40ab8d3f99f859f4caf5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 1
+--- !u!114 &1576103054
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1576103047}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7296af1e5df548c487e4afabd577374b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  splashRadius: 4
+  oilAmount: 10
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

@@ -1,5 +1,5 @@
 using System;
-using Elements;
+using Effects;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -28,7 +28,7 @@ namespace Projectiles
         private void Start()
         {
             _projectiles = new ObjectPool<Projectile>(
-                () => Instantiate(prefab),
+                () => Instantiate(prefab, transform),
                 projectile => projectile.gameObject.SetActive(true),
                 projectile => projectile.gameObject.SetActive(false),
                 actionOnDestroy: projectile => Destroy(projectile.gameObject),
@@ -40,24 +40,18 @@ namespace Projectiles
             Vector2 position,
             Positioner.Position offset,
             Positioner.Position positioner,
-            ElementStack element,
+            Effect effect,
+            float effAmount,
             GraceIgnoreMode ignoreMode,
             int amount = 5,
             float speed = 1f
         )
         {
-            int layerMask = ignoreMode switch
-            {
-                GraceIgnoreMode.Player => LayerMask.GetMask("Default", "Environment", "Objects", "Enemies"),
-                GraceIgnoreMode.Enemies => LayerMask.GetMask("Default", "Environment", "Objects", "Player"),
-                _ => throw new ArgumentOutOfRangeException(nameof(ignoreMode), ignoreMode, null)
-            };
-            
             for (int i = 0; i < amount; i++)
             {
                 Projectile projectile = _projectiles.Get();
                 projectile.transform.position = position + offset(position, i);
-                projectile.Init(positioner, speed, element, o => _projectiles.Release(o), layerMask);
+                projectile.Init(positioner, speed, effect, effAmount, o => _projectiles.Release(o), ignoreMode.GetLayerMask());
             }
         }
     }
