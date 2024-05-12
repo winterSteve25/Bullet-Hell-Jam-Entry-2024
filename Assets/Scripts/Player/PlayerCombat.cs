@@ -7,18 +7,34 @@ namespace Player
 {
     public class PlayerCombat : MonoBehaviour
     {
+        [SerializeField] private Camera cam;
+        
         private void Update()
         {
-            if (GameInput.LeftClickButtonDown())
-            {
-                ProjectileManager.Instance.Spawn(
-                    transform.position,
-                    Positioner.Polar(),
-                    (currPos, _) => (currPos - transform.position).normalized,
-                    new ElementStack(Element.Fire, 10),
-                    amount: 3
-                );
-            }
+            if (!GameInput.LeftClickButtonDown()) return;
+            
+            Vector3 position = transform.position;
+            Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 dir = mousePos - position;
+            dir.Normalize();
+                
+            ProjectileManager.Instance.Spawn(
+                position + dir * 3,
+                Positioner.Zero(),
+                Positioner.Directional(dir),
+                new ElementStack(Element.Fire, 10),
+                amount: 1, 
+                speed: 25
+            );
+        }
+
+        private void OnDrawGizmos()
+        {
+            Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 position = transform.position;
+            Vector3 dir = mousePos - position;
+            dir.Normalize();
+            Gizmos.DrawRay(position, dir);
         }
     }
 }

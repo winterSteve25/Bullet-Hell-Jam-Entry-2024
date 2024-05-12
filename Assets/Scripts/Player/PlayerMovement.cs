@@ -5,6 +5,9 @@ namespace Player
 {
     public class PlayerMovement : MonoBehaviour
     {
+        private static Vector2 _playerPos;
+        public static Vector2 PlayerPos => _playerPos;
+        
         private Rigidbody2D _rigidbody;
 
         [SerializeField] private float horizontalDamping = 0.5f;
@@ -23,6 +26,7 @@ namespace Player
             float vv = CalculateVelocity(_rigidbody.velocity.y, "Vertical");
             _rigidbody.velocity = new Vector2(hv * speed, vv * speed);
             _rigidbody.velocity.Normalize();
+            _playerPos = _rigidbody.position;
         }
 
         private float CalculateVelocity(float initial, string axis)

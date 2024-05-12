@@ -1,5 +1,6 @@
 using System;
 using Elements;
+using Player;
 using UnityEngine;
 
 namespace Projectiles
@@ -42,9 +43,16 @@ namespace Projectiles
 
         private void Update()
         {
-            var dt = Time.deltaTime;
+            float dt = Time.deltaTime;
             _elapsedTime += dt;
-            transform.Translate(_position(transform.position, _elapsedTime) * (dt * _speed));
+            Vector3 translation = _position(transform.position, _elapsedTime) * (dt * _speed);
+            translation.z = 0;
+            transform.Translate(translation);
+
+            if (((Vector2) transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
+            {
+                _onDestroy(this);
+            }
         }
 
         private void FixedUpdate()
