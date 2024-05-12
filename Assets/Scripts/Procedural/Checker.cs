@@ -19,24 +19,7 @@ public class Checker : MonoBehaviour
             if(openSide[i])
             {
                 // 1 = Up, 2 = Left, 3 = Down, 4 = Right
-                switch (i)
-                {
-                    case 0:
-                        spawnPlace += new Vector2(0, 5);
-                    break;
-                    case 1:
-                        spawnPlace += new Vector2(-5, 0);
-                    break;
-                    case 2:
-                        spawnPlace += new Vector2(0, -5);
-                    break;
-                    case 3:
-                        spawnPlace += new Vector2(5, 0);
-                    break;
-                    default:
-                        spawnPlace += new Vector2(0, 0);
-                    break;
-                }
+                spawnPlace += RoomManager.DirCheck(i)*5;
                 if(Physics2D.OverlapBox(spawnPlace, new Vector2(1,1), 0) == null)
                 {
                     spawner.Spawn(i, spawnPlace);
