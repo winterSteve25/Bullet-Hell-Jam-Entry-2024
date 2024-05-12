@@ -8,15 +8,15 @@ namespace Player
     public class PlayerCombat : MonoBehaviour
     {
         [SerializeField] private Camera cam;
-        
+
         private void Update()
         {
-            if (!GameInput.LeftClickButton()) return;
-            
+            if (!GameInput.LeftClickButtonDown()) return;
+
             Vector2 position = transform.position;
             Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
             Vector2 dir = mousePos - position;
-            
+
             ProjectileManager.Instance.Spawn(
                 position,
                 Positioner.Zero(),

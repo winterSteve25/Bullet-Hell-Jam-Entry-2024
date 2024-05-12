@@ -6,11 +6,14 @@ namespace Utils
     public class HitPoints : MonoBehaviour
     {
         [SerializeField] private int hp;
+        [SerializeField] private bool invincible;
+        [SerializeField] private float invincibleTime;
         
         public event Action OnDeath;
         public event Action OnHealed;
         public event Action OnDamaged;
         
+        public bool Invincible => invincible;
         public int Hp
         {
             get => hp;
@@ -31,6 +34,29 @@ namespace Utils
                     OnHealed?.Invoke();
                 }
             }
+        }
+
+        private float _elapsedTime;
+
+        private void Update()
+        {
+            if (!invincible)
+            {
+                return;
+            }
+            
+            _elapsedTime += Time.deltaTime;
+
+            if (_elapsedTime > invincibleTime)
+            {
+                invincible = false;
+            }
+        }
+
+        public void SetInvincible()
+        {
+            invincible = true;
+            _elapsedTime = 0;
         }
     }
 }

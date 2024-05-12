@@ -53,10 +53,10 @@ namespace Projectiles
             Vector2 translation = _position(transform.position, _elapsedTime) * (dt * _speed);
             transform.Translate(translation);
 
-            if (((Vector2) transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
-            {
-                _onDestroy(this);
-            }
+            // if (((Vector2) transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
+            // {
+                // _onDestroy(this);
+            // }
         }
 
         private void FixedUpdate()
@@ -85,6 +85,7 @@ namespace Projectiles
                 }
 
                 if (!col.gameObject.TryGetComponent(out EffectObject obj)) continue;
+                if (obj.Invincible) continue;
                 
                 obj.Apply(_effect, _effAmount, true);
                 obj.Hp -= 1; 

@@ -1,4 +1,5 @@
-using System;
+using System.Collections.Generic;
+using Effects.Status;
 using UnityEngine;
 using Utils;
 
@@ -16,6 +17,8 @@ namespace Effects
             set => _hp.Hp = value;
         }
 
+        public bool Invincible => _hp.Invincible;
+
         private void Start()
         {
             _hp = GetComponent<HitPoints>();
@@ -27,8 +30,29 @@ namespace Effects
             container.Apply(effects);
         }
 
+        public bool RemoveEffect(Effect effect, float amount)
+        {
+            if (!effects.ContainsKey(effect)) return false;
+            effects[effect] -= amount;
+            if (effects[effect] > 0) return true;
+            effects.Remove(effect);
+            return false;
+        }
+
+        public float GetAmount(Effect effect)
+        {
+            if (effects.TryGetValue(effect, out var amount))
+            {
+                return amount;
+            }
+
+            return 0;
+        }
+
         public float Apply(Effect eff, float amount, bool forceApplyAll = false)
         {
+            var half = amount * 0.5f;
+            
             if (effects.ContainsKey(eff))
             {
                 if (forceApplyAll)
@@ -37,26 +61,58 @@ namespace Effects
                     return 0;
                 }
                 
-                effects[eff] += amount * 0.5f;
-                return amount * 0.5f;
+                effects[eff] += half;
+                return half;
             }
 
             if (!forceApplyAll)
             {
-                effects.Add(eff, amount * 0.5f);
-                return amount * 0.5f;
+                effects.Add(eff, half);
+                EffectsChanged(eff, half);
+                return half;
             }
             
             effects.Add(eff, amount);
+            EffectsChanged(eff, amount);
             return 0;
         }
 
         private void Apply(EffectStackDic effectStack)
         {
+            List<(Effect, float)> changes = new List<(Effect, float)>();
+            
             foreach (var (eff, amount) in effectStack)
             {
-                effectStack[eff] = Apply(eff, amount);
+                changes.Add((eff, Apply(eff, amount)));
             }
+
+            foreach (var (eff, amount) in changes)
+            {
+                effectStack[eff] = amount;
+            }
+        }
+
+        private void EffectsChanged(Effect effectAdded, float amount)
+        {
+            if (BothEffectsPresent(Effect.Oil, Effect.Fire, effectAdded))
+            {
+                StatusEffect.Add<Burning>(this);
+            }
+        }
+
+        private bool BothEffectsPresent(Effect a, Effect b, Effect x)
+        {
+            if (x == a && effects.ContainsKey(b))
+            {
+                return true;
+            }
+
+            if (x == b && effects.ContainsKey(a))
+            {
+                return true;
+            }
+
+            return false;
         }
     }
 }

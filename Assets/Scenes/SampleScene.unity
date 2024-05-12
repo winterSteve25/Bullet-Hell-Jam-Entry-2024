@@ -539,7 +539,7 @@ Transform:
   m_GameObject: {fileID: 202524459}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6, y: -0.3, z: 0}
+  m_LocalPosition: {x: -0.21, y: -0.3, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -561,6 +561,8 @@ MonoBehaviour:
   horizontalDampingWhenStopping: 0.9
   horizontalDampingWhenTurning: 0.9
   speed: 0.935
+  dashMultiplier: 10
+  dashCooldown: 1
 --- !u!50 &202524463
 Rigidbody2D:
   serializedVersion: 4
@@ -646,8 +648,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   effects:
-    m_keys: []
-    m_values: []
+    m_keys:
+    - {fileID: 11400000, guid: daca028955009824cb27eb28b0459f32, type: 2}
+    m_values:
+    - 10
 --- !u!114 &202524466
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -673,7 +677,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bb406b82de40ab8d3f99f859f4caf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 3
+  hp: 10
+  invincible: 0
+  invincibleTime: 0.1
 --- !u!1 &372270631
 GameObject:
   m_ObjectHideFlags: 0
@@ -16382,7 +16388,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6, y: -0.3, z: -10}
+  m_LocalPosition: {x: -0.21, y: -0.3, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16657,7 +16663,7 @@ Transform:
   m_GameObject: {fileID: 1486485020}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.6, y: -0.3, z: -10}
+  m_LocalPosition: {x: -0.21, y: -0.3, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -16838,7 +16844,7 @@ Transform:
   m_GameObject: {fileID: 1576103047}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.7, y: 1.58, z: 0}
+  m_LocalPosition: {x: -5.18, y: -0.21, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -16884,6 +16890,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   hp: 1
+  invincible: 0
+  invincibleTime: 0
 --- !u!114 &1576103054
 MonoBehaviour:
   m_ObjectHideFlags: 0

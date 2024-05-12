@@ -15,8 +15,8 @@ namespace Projectiles
         {
             return ignoreMode switch
             {
-                GraceIgnoreMode.Player => LayerMask.GetMask("Default", "Environment", "Objects", "Enemies"),
-                GraceIgnoreMode.Enemies => LayerMask.GetMask("Default", "Environment", "Objects", "Player"),
+                GraceIgnoreMode.Player => LayerMask.GetMask("Default", "Environment", "Enemies"),
+                GraceIgnoreMode.Enemies => LayerMask.GetMask("Default", "Environment", "Player"),
                 _ => throw new ArgumentOutOfRangeException(nameof(ignoreMode), ignoreMode, null)
             };
         }
