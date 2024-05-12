@@ -14,6 +14,7 @@ namespace Projectiles
         private Positioner.Position _position;
         private Action<Projectile> _onDestroy;
         private float _speed;
+        private int _graceLayerMask;
         private Collider2D[] _colliders;
 
         private void Start()
@@ -27,16 +28,18 @@ namespace Projectiles
             float speed,
             ElementStack element,
             Action<Projectile> onDestroy,
+            int graceLayerMask,
             Sprite sprite = null
         )
         {
-            if (sprite != null)
+            if (sprite is not null)
                 _renderer.sprite = sprite;
 
             _position = position;
             _element = new ElementStack();
             _element.Set(element);
             _onDestroy = onDestroy;
+            _graceLayerMask = graceLayerMask;
             _speed = speed;
             _elapsedTime = 0;
         }
@@ -45,8 +48,7 @@ namespace Projectiles
         {
             float dt = Time.deltaTime;
             _elapsedTime += dt;
-            Vector3 translation = _position(transform.position, _elapsedTime) * (dt * _speed);
-            translation.z = 0;
+            Vector2 translation = _position(transform.position, _elapsedTime) * (dt * _speed);
             transform.Translate(translation);
 
             if (((Vector2) transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
@@ -62,12 +64,18 @@ namespace Projectiles
                 _colliders[i] = null;
             }
 
-            Physics2D.OverlapCircleNonAlloc(transform.position, 0.25f, _colliders);
+            if (_elapsedTime < 0.5)
+            {
+                Physics2D.OverlapCircleNonAlloc(transform.position, 0.25f, _colliders, _graceLayerMask);
+            }
+            else
+            {
+                Physics2D.OverlapCircleNonAlloc(transform.position, 0.25f, _colliders);
+            }
 
             foreach (var col in _colliders)
             {
                 if (col == null) continue;
-
                 if (col.CompareTag("Walls"))
                 {
                     _onDestroy(this);
@@ -76,8 +84,10 @@ namespace Projectiles
 
                 if (!col.gameObject.TryGetComponent(out ElementObject obj)) continue;
                 
-                _onDestroy(this);
                 Reaction.React(_element, obj);
+                obj.Hp -= 1; 
+                
+                _onDestroy(this);
             }
         }
     }

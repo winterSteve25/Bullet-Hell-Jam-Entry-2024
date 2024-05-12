@@ -13,28 +13,19 @@ namespace Player
         {
             if (!GameInput.LeftClickButtonDown()) return;
             
-            Vector3 position = transform.position;
-            Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 dir = mousePos - position;
-            dir.Normalize();
+            Vector2 position = transform.position;
+            Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 dir = mousePos - position;
                 
             ProjectileManager.Instance.Spawn(
-                position + dir * 3,
+                position,
                 Positioner.Zero(),
                 Positioner.Directional(dir),
                 new ElementStack(Element.Fire, 10),
+                GraceIgnoreMode.Player,
                 amount: 1, 
-                speed: 25
+                speed: 15
             );
-        }
-
-        private void OnDrawGizmos()
-        {
-            Vector3 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
-            Vector3 position = transform.position;
-            Vector3 dir = mousePos - position;
-            dir.Normalize();
-            Gizmos.DrawRay(position, dir);
         }
     }
 }

@@ -34,6 +34,12 @@ namespace Elements
 
         public static void React(ElementStack a, ElementObject b)
         {
+            if (b.element.IsEmpty())
+            {
+                b.element.Set(a);
+                a.Empty();
+            }
+            
             ReactInternal(a, b);
         }
     }

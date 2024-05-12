@@ -4,9 +4,9 @@ namespace Projectiles
 {
     public class Positioner
     {
-        public delegate Vector3 Position(Vector3 currentPosition, float time);
+        public delegate Vector2 Position(Vector2 currentPosition, float time);
 
-        public static Position Directional(Vector3 dir)
+        public static Position Directional(Vector2 dir)
         {
             dir.Normalize();
             return (_, _) => dir;
@@ -14,7 +14,7 @@ namespace Projectiles
 
         public static Position Polar()
         {
-            return (_, t) => new Vector3(t * Mathf.Cos(t), t * Mathf.Sin(t));
+            return (_, t) => new Vector2(t * Mathf.Cos(t), t * Mathf.Sin(t));
         }
 
         public static Position Identity()
@@ -24,7 +24,7 @@ namespace Projectiles
         
         public static Position Zero()
         {
-            return (_, _) => Vector3.zero;
+            return (_, _) => Vector2.zero;
         }
     }
 }
