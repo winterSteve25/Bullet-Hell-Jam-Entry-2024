@@ -324,8 +324,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 035c40f94b2211e44967d1faae4ece3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tilemap: {fileID: 1537251463}
-  tileBase: {fileID: 11400000, guid: f6b9e48d3507d5842926924651754ff1, type: 2}
   objRoom: {fileID: 3184019152373343381, guid: f4448985165403e47baa62cde10a09c2, type: 3}
   roomManager: {fileID: 1388802659}
   roomLimits: 10
@@ -379,6 +377,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   roomManager: {fileID: 1388802659}
+  tilemap: {fileID: 1537251463}
+  tileBase: {fileID: 11400000, guid: f6b9e48d3507d5842926924651754ff1, type: 2}
 --- !u!4 &1388802658
 Transform:
   m_ObjectHideFlags: 0

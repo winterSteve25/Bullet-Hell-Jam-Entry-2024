@@ -7,19 +7,16 @@ namespace Procedural
         public Room room { get; set; }
         private Spawner _spawner;
 
-        private void Start()
+        public void CheckSpawn()
         {
             _spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
-        }
-
-        private void CheckSpawn()
-        {
             foreach ((Vector3Int doorPos, int doorDirection) in room.Doors)
             {
                 Vector3 spawnPlace = doorPos;
 
                 if (Physics2D.OverlapBox((Vector2)spawnPlace, new Vector2(1, 1), 0) == null)
                 {
+                    _spawner.DrawRooms(room.Length, room.Height, transform.position);
                     _spawner.Spawn(doorDirection, spawnPlace);
                 }
             }

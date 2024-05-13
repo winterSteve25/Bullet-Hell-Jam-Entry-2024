@@ -5,11 +5,6 @@ namespace Procedural.RoomGeneration
 {
     public class RoomGen : MonoBehaviour
     {
-        [SerializeField]
-        private Tilemap tilemap;
-
-        [SerializeField]
-        private TileBase tileBase;
 
         [SerializeField]
         private GameObject objRoom;
@@ -67,7 +62,7 @@ namespace Procedural.RoomGeneration
 
         private void GenerateRooms(int length, int height, Vector3Int startPos)
         {
-            GameObject room = Instantiate(objRoom, transform.position, Quaternion.identity);
+            GameObject room = Instantiate(objRoom, new Vector2(100,100), Quaternion.identity);
             Checker roomChecker = room.GetComponent<Checker>();
             roomChecker.room = new Room(length, height);
             int doorsCount = Random.Range(1, 5);
@@ -84,39 +79,12 @@ namespace Procedural.RoomGeneration
             }
         }
 
-        private void DrawRooms(int length, int height)
-        {
-            Vector3Int startPos = tilemap.WorldToCell(
-                new Vector3(-length / 2, height / 2, 0) + transform.position
-            );
-
-            for (int j = startPos.y; j > startPos.y - height; j--)
-            {
-                for (int i = startPos.x; i < startPos.x + length; i++)
-                {
-                    if (
-                        j == startPos.y
-                        || j == startPos.y - height + 1
-                        || i == startPos.x
-                        || i == startPos.x + length - 1
-                    )
-                    {
-                        tilemap.SetTile(new Vector3Int(i, j, 0), tileBase);
-                    }
-                    else
-                    {
-                        //draw floors
-                    }
-                }
-            }
-        }
-
         private void AddDoors(Vector3Int startPos, Direction direction)
         {
             Debug.Log(direction);
             for (int i = 0; i < 3; i++)
             {
-                tilemap.SetTile(startPos, null);
+                //tilemap.SetTile(startPos, null);
                 Vector3Int test = RoomManager.IsLength(direction.ToUnitVector3Int())
                     ? new Vector3Int(0, -1, 0)
                     : new Vector3Int(1, 0, 0);
