@@ -60,5 +60,10 @@ namespace Procedural
                 _ => throw new ArgumentOutOfRangeException(nameof(i), i, null)
             };
         }
+
+        public static Vector3Int FromVector3(Vector3 vector3)
+        {
+            return new Vector3Int((int)vector3.x, (int)vector3.y, (int)vector3.z);
+        }
     }
 }

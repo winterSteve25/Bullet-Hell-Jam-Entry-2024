@@ -5,30 +5,97 @@ namespace Procedural.RoomGeneration
 {
     public class RoomGen : MonoBehaviour
     {
-        [SerializeField] private Tilemap tilemap;
-        [SerializeField] private TileBase tileBase;
-        [SerializeField] private int minLength;
-        [SerializeField] private int maxLength;
-        [SerializeField] private int minHeight;
-        [SerializeField] private int maxHeight;
+        [SerializeField]
+        private Tilemap tilemap;
 
-        private bool[] _doorBool = new bool[4];
+        [SerializeField]
+        private TileBase tileBase;
+
+        [SerializeField]
+        private GameObject objRoom;
+
+        [SerializeField]
+        private RoomManager roomManager;
+
+        [SerializeField]
+        private int roomLimits;
+
+        [Header("Room Sizes")]
+        [SerializeField]
+        private int minLength;
+
+        [SerializeField]
+        private int maxLength;
+
+        [SerializeField]
+        private int minHeight;
+
+        [SerializeField]
+        private int maxHeight;
 
         private void Start()
         {
-            // + 1 b/c Range is exclusive on the top
-            Generate(Random.Range(minLength, maxLength + 1), Random.Range(minHeight, maxHeight + 1));
+            for (int i = 0; i < roomLimits; i++)
+            {
+                // + 1 b/c Range is exclusive on the top
+                GenerateRooms(
+                    Random.Range(minLength, maxLength + 1),
+                    Random.Range(minHeight, maxHeight + 1),
+                    DirectionExt.FromVector3(transform.position)
+                );
+            }
         }
 
-        private void Generate(int length, int height)
+        public void AddRoom(GameObject room, Direction direction)
         {
-            Vector3Int startPos = tilemap.WorldToCell(new Vector3(-length / 2, height / 2, 0) + transform.position);
+            switch (direction)
+            {
+                case Direction.Up:
+                    roomManager.objUpRooms.Add(room);
+                    break;
+                case Direction.Left:
+                    roomManager.objLeftRooms.Add(room);
+                    break;
+                case Direction.Down:
+                    roomManager.objDownRooms.Add(room);
+                    break;
+                case Direction.Right:
+                    roomManager.objRightRooms.Add(room);
+                    break;
+            }
+        }
 
-            for (int j = startPos.y - 1; j > startPos.y - height; j--)
+        private void GenerateRooms(int length, int height, Vector3Int startPos)
+        {
+            GameObject room = Instantiate(objRoom, transform.position, Quaternion.identity);
+            Checker roomChecker = room.GetComponent<Checker>();
+            roomChecker.room = new Room(length, height);
+            int doorsCount = Random.Range(1, 5);
+            int k = 0;
+            while (k < doorsCount)
+            {
+                int ranDir = Random.Range(0, 4);
+                Vector3Int[] corners = RoomManager.CornersPos(startPos, length, height);
+                roomChecker.room.Doors.Add(
+                    (RoomManager.RandomPlacement(DirectionExt.FromIndex(ranDir), corners), ranDir)
+                );
+                AddRoom(room, DirectionExt.FromIndex(ranDir));
+                k++;
+            }
+        }
+
+        private void DrawRooms(int length, int height)
+        {
+            Vector3Int startPos = tilemap.WorldToCell(
+                new Vector3(-length / 2, height / 2, 0) + transform.position
+            );
+
+            for (int j = startPos.y; j > startPos.y - height; j--)
             {
                 for (int i = startPos.x; i < startPos.x + length; i++)
                 {
-                    if (j == startPos.y - 1
+                    if (
+                        j == startPos.y
                         || j == startPos.y - height + 1
                         || i == startPos.x
                         || i == startPos.x + length - 1
@@ -42,23 +109,11 @@ namespace Procedural.RoomGeneration
                     }
                 }
             }
-
-            int doorsCount = Random.Range(1, 4);
-            int k = 0;
-            while (k < doorsCount)
-            {
-                int ranDir = Random.Range(1, 4);
-                if (_doorBool[ranDir]) continue;
-                _doorBool[ranDir] = true;
-                Vector3Int[] corners = RoomManager.CornersPos(startPos, length, height);
-                AddDoors(RoomManager.RandomPlacement(ranDir, corners), DirectionExt.FromIndex(ranDir));
-                k++;
-            }
         }
 
         private void AddDoors(Vector3Int startPos, Direction direction)
         {
-            Debug.Log(startPos);
+            Debug.Log(direction);
             for (int i = 0; i < 3; i++)
             {
                 tilemap.SetTile(startPos, null);

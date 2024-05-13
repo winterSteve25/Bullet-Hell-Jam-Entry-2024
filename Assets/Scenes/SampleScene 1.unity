@@ -326,8 +326,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tilemap: {fileID: 1537251463}
   tileBase: {fileID: 11400000, guid: f6b9e48d3507d5842926924651754ff1, type: 2}
-  Length: 5
-  Height: 5
+  objRoom: {fileID: 3184019152373343381, guid: f4448985165403e47baa62cde10a09c2, type: 3}
+  roomManager: {fileID: 1388802659}
+  roomLimits: 10
+  minLength: 10
+  maxLength: 32
+  minHeight: 10
+  maxHeight: 32
 --- !u!4 &651735213
 Transform:
   m_ObjectHideFlags: 0
@@ -401,56 +406,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb86f858e5d8e324fb78b323edd0fb17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  obj_UpRooms:
-  - {fileID: 7744771500172057347, guid: e60478f466708c84e832dc5a250c988b, type: 3}
-  - {fileID: 9092402463226682056, guid: 7186cca370dd5c541afcae9a57361f78, type: 3}
-  - {fileID: 6963328438105145150, guid: 5ec0ebb7ae3b29645853e3c4381ebe58, type: 3}
-  - {fileID: 8736337513036747765, guid: 3446ce5bc00b42940a5b272b4ba17356, type: 3}
-  - {fileID: 2726374403897866206, guid: e63d137345909c94ea933616ea620c04, type: 3}
-  - {fileID: 6444084902614385876, guid: 109bf2fd4de3e7d439d4df1fd18dd0ca, type: 3}
-  - {fileID: 7662882087345559957, guid: 6dd742f9f1bdba346bff720d471ca935, type: 3}
-  obj_DownRooms:
-  - {fileID: 7307058530258138958, guid: e70a32a4e5a71824797b50a64f75a971, type: 3}
-  - {fileID: 676757804457208524, guid: b4f622323bb233844812b7b7c458aafc, type: 3}
-  - {fileID: 7867940871322684059, guid: e688479fdb3e8704c9cb641b79f356a2, type: 3}
-  - {fileID: 8163665327985073412, guid: 7f575867eac27d347ac982015dc06394, type: 3}
-  - {fileID: 7662882087345559957, guid: 6dd742f9f1bdba346bff720d471ca935, type: 3}
-  - {fileID: 8736337513036747765, guid: 3446ce5bc00b42940a5b272b4ba17356, type: 3}
-  - {fileID: 2726374403897866206, guid: e63d137345909c94ea933616ea620c04, type: 3}
-  obj_LeftRooms:
-  - {fileID: 9092402463226682056, guid: 7186cca370dd5c541afcae9a57361f78, type: 3}
-  - {fileID: 6963328438105145150, guid: 5ec0ebb7ae3b29645853e3c4381ebe58, type: 3}
-  - {fileID: 8736337513036747765, guid: 3446ce5bc00b42940a5b272b4ba17356, type: 3}
-  - {fileID: 676757804457208524, guid: b4f622323bb233844812b7b7c458aafc, type: 3}
-  - {fileID: 7867940871322684059, guid: e688479fdb3e8704c9cb641b79f356a2, type: 3}
-  - {fileID: 4150163194603382973, guid: b2ff692d52261ca4eba172fc2d45c4e9, type: 3}
-  - {fileID: 4605514737461724639, guid: 6d845eb0856e3104283c5445eb1064aa, type: 3}
-  obj_RightRooms:
-  - {fileID: 8163665327985073412, guid: 7f575867eac27d347ac982015dc06394, type: 3}
-  - {fileID: 7867940871322684059, guid: e688479fdb3e8704c9cb641b79f356a2, type: 3}
-  - {fileID: 4605514737461724639, guid: 6d845eb0856e3104283c5445eb1064aa, type: 3}
-  - {fileID: 5208491761667004241, guid: 08ead725171bb954da855451243039a4, type: 3}
-  - {fileID: 2726374403897866206, guid: e63d137345909c94ea933616ea620c04, type: 3}
-  - {fileID: 9092402463226682056, guid: 7186cca370dd5c541afcae9a57361f78, type: 3}
-  - {fileID: 7744771500172057347, guid: e60478f466708c84e832dc5a250c988b, type: 3}
-  obj_AllRooms:
-  - {fileID: 7307058530258138958, guid: e70a32a4e5a71824797b50a64f75a971, type: 3}
-  - {fileID: 676757804457208524, guid: b4f622323bb233844812b7b7c458aafc, type: 3}
-  - {fileID: 7867940871322684059, guid: e688479fdb3e8704c9cb641b79f356a2, type: 3}
-  - {fileID: 8163665327985073412, guid: 7f575867eac27d347ac982015dc06394, type: 3}
-  - {fileID: 5286533896465216544, guid: 8fddadecad6fa184990159fce128f86c, type: 3}
-  - {fileID: 4150163194603382973, guid: b2ff692d52261ca4eba172fc2d45c4e9, type: 3}
-  - {fileID: 4605514737461724639, guid: 6d845eb0856e3104283c5445eb1064aa, type: 3}
-  - {fileID: 5208491761667004241, guid: 08ead725171bb954da855451243039a4, type: 3}
-  - {fileID: 6444084902614385876, guid: 109bf2fd4de3e7d439d4df1fd18dd0ca, type: 3}
-  - {fileID: 7662882087345559957, guid: 6dd742f9f1bdba346bff720d471ca935, type: 3}
-  - {fileID: 2726374403897866206, guid: e63d137345909c94ea933616ea620c04, type: 3}
-  - {fileID: 8736337513036747765, guid: 3446ce5bc00b42940a5b272b4ba17356, type: 3}
-  - {fileID: 6963328438105145150, guid: 5ec0ebb7ae3b29645853e3c4381ebe58, type: 3}
-  - {fileID: 9092402463226682056, guid: 7186cca370dd5c541afcae9a57361f78, type: 3}
-  - {fileID: 7744771500172057347, guid: e60478f466708c84e832dc5a250c988b, type: 3}
-  RoomLimits: 100
-  obj_FullRoom: {fileID: 5286533896465216544, guid: 8fddadecad6fa184990159fce128f86c, type: 3}
+  objUpRooms: []
+  objDownRooms: []
+  objLeftRooms: []
+  objRightRooms: []
+  objAllRooms: []
+  roomLimits: 20
+  objFullRoom: {fileID: 5286533896465216544, guid: 8fddadecad6fa184990159fce128f86c, type: 3}
 --- !u!1 &1537251460
 GameObject:
   m_ObjectHideFlags: 0
