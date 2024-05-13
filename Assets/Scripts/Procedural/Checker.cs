@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace Procedural
 {
@@ -8,7 +7,7 @@ namespace Procedural
         public Room room { get; set; }
         private Spawner _spawner;
 
-        void Start()
+        private void Start()
         {
             _spawner = GameObject.FindWithTag("Spawner").GetComponent<Spawner>();
         }
