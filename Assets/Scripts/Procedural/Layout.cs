@@ -10,6 +10,7 @@ namespace Procedural
     {
         public readonly List<RectInt> Rectangles = new List<RectInt>();
         public readonly List<RectInt> SacredRectangles = new List<RectInt>();
+        public readonly List<(PremadeRoom, RectInt)> PremadeRooms = new List<RectInt>();
         public readonly RectInt Whole;
 
         private int _spawn;
