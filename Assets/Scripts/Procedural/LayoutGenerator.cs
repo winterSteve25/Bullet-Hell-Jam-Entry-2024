@@ -40,7 +40,27 @@ namespace Procedural
                     _ => throw new ArgumentOutOfRangeException()
                 };
 
-                Vector2Int spawnRoomAtPos = layout.Whole.size;
+                Vector2Int spawnRoomAtPos = layout.Whole.size * spawnRoomAt.ToCornerVectorOffset();
+                switch (spawnRoomAt) {
+                    case Direction.Up:
+                        spawnRoomAtPos.x -= premadeRoom.Width + Random.Range(minGapMargin, gapMargin);
+                        spawnRoomAtPos.y -= Random.Range(premadeRoom.Height, layout.Whole.height - premadeRoom.height);
+                        break;
+                    case Direction.Right:
+                        spawnRoomAtPos.x += Random.Range(minGapMargin, gapMargin);
+                        spawnRoomAtPos.y -= Random.Range(premadeRoom.Height, layout.Whole.height - premadeRoom.height);
+                        break;
+                    case Direction.Left:
+                        spawnRoomAtPos.x -= premadeRoom.Width + Random.Range(minGapMargin, gapMargin);
+                        spawnRoomAtPos.y += Random.Range(0, layout.Whole.height - premadeRoom.height);
+                        break;
+                    case Direction.Down:
+                        spawnRoomAtPos.x += Random.Range(minGapMargin, gapMargin);
+                        spawnRoomAtPos.y += Random.Range(0, layout.Whole.height - premadeRoom.height);
+                        break;
+                }
+
+                layout.PremadeRooms.Add((premadeRoom, new RectInt(spawnRoomAtPos.x, spawnRoomAtPos.y, premadeRoom.Width, premadeRoom.Height)));
             }
 
             return layout;
