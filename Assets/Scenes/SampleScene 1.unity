@@ -504,11 +504,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb98c4ffe6a34e359d9db07a9a4ea7a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tunnelLength: 2
   minRoomLength: 12
-  maxRoomLength: 32
-  minRoomNum: 4
-  maxRoomNum: 6
+  width: 100
+  height: 100
+  sliceCount: 12
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

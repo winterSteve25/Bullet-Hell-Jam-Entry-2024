@@ -1,65 +1,99 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Procedural
 {
     public class Layout
     {
-        public readonly List<(Vector3Int, int, int)> Rooms;
+        public readonly List<RectInt> Rectangles = new List<RectInt>();
+        public readonly List<RectInt> SacredRectangles = new List<RectInt>();
 
-        public Layout()
+        private int numVertSplit;
+
+        public Layout(int width, int height)
         {
-            Rooms = new List<(Vector3Int, int, int)>();
+            Rectangles.Add(new RectInt(0, 0, width, height));
         }
 
-        public void AddRoom(Vector3Int pos, int width, int height)
+        public void SliceRandomRect(int minLength)
         {
-            Rooms.Add((pos, width, height));
-        }
-
-        public bool IsOccupied(Vector3Int position)
-        {
-            foreach (var (pos, width, height) in Rooms)
+            if (Rectangles.Count <= 0)
             {
-                if (IsWithin(pos, width, height, position))
-                {
-                    return true;
-                }
+                return;
             }
 
-            return false;
-        }
+            int index = Random.Range(0, Rectangles.Count);
+            RectInt rect = Rectangles[index];
+            Rectangles.RemoveAt(index);
+            RectInt newRect;
 
-        private static bool IsTwoRoomsColliding(Vector3Int position1, int width1, int height1, Vector3Int position2, int width2, int height2)
-        {
-            Vector3Int min1 = position1;
-            Vector3Int max1 = position1 + new Vector3Int(width1, height1, 0);
-
-            Vector3Int min2 = position2;
-            Vector3Int max2 = position2 + new Vector3Int(width2, height2, 0);
-
-            bool overlapX = min1.x < max2.x && max1.x > min2.x;
-            bool overlapY = min1.y < max2.y && max1.y > min2.y;
-
-            return overlapX && overlapY;
-        }
-
-        public bool IsColliding(Vector3Int pos1, int width1, int height1)
-        {
-            foreach (var (pos, width, height) in Rooms)
+            if (Random.Range(0, 1f) < ProbabilityToVert())
             {
-                if (IsTwoRoomsColliding(pos1, width1, height1, pos, width, height))
-                {
-                    return true;
-                }
+                numVertSplit++;
+                int currentWidth = rect.width;
+                int newWidth = Random.Range(minLength, rect.width - minLength);
+                newRect = new RectInt(rect.xMin + (currentWidth - newWidth), rect.yMin, newWidth, rect.height);
+                rect.width = currentWidth - newWidth;
+            }
+            else
+            {
+                numVertSplit--;
+                int currentHeight = rect.height;
+                int newHeight = Random.Range(minLength, rect.height - minLength);
+                newRect = new RectInt(rect.xMin, rect.yMin + (currentHeight - newHeight), rect.width, newHeight);
+                rect.height = currentHeight - newHeight;
             }
 
-            return false;
+            if (CanBeSliced(newRect, minLength))
+            {
+                Rectangles.Add(newRect);
+            }
+            else
+            {
+                SacredRectangles.Add(newRect);
+            }
+
+            if (CanBeSliced(rect, minLength))
+            {
+                Rectangles.Add(rect);
+            }
+            else
+            {
+                SacredRectangles.Add(rect);
+            }
         }
 
-        private static bool IsWithin(Vector3Int position, int width, int height, Vector3Int point)
+        private float ProbabilityToVert()
         {
-            return point.x > position.x && point.x < position.x + width && point.y > position.y && point.y < position.y + height;
+            return Mathf.Pow(2, -(numVertSplit + 1));
+        }
+
+        private bool CanBeSliced(RectInt rect, int minLength)
+        {
+            return rect.width >= minLength * 2 && rect.height >= minLength * 2;
+        }
+
+        public List<RectInt> Complete()
+        {
+            List<RectInt> rooms = new List<RectInt>();
+            RectInt? first = null;
+
+            foreach (var rect in SacredRectangles.Concat(Rectangles))
+            {
+                RectInt r = rect;
+
+                if (first == null)
+                {
+                    first = r;
+                    rooms.Add(r);
+                    continue;
+                }
+
+                rooms.Add(r);
+            }
+
+            return rooms;
         }
     }
 }
