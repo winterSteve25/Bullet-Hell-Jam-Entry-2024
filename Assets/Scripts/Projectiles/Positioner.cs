@@ -12,16 +12,21 @@ namespace Projectiles
             return (_, _) => dir;
         }
 
-        public static Position Polar()
+        public static Position Outward(Vector2 origin)
         {
-            return (_, t) => new Vector2(t * Mathf.Cos(t), t * Mathf.Sin(t));
+            return (currPos, _) => (currPos - origin).normalized;
+        }
+
+        public static Position Polar(float startAngleInRad, float radius, float tMul)
+        {
+            return (_, t) => new Vector2(radius * Mathf.Cos(startAngleInRad + t * tMul), radius * Mathf.Sin(startAngleInRad + t * tMul));
         }
 
         public static Position Identity()
         {
             return (currPos, _) => currPos;
         }
-        
+
         public static Position Zero()
         {
             return (_, _) => Vector2.zero;

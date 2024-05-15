@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 
 namespace Procedural
@@ -13,31 +13,7 @@ namespace Procedural
 
     public static class DirectionExt
     {
-        public static int ToIndex(this Direction direction)
-        {
-            return direction switch
-            {
-                Direction.Up => 0,
-                Direction.Down => 2,
-                Direction.Left => 1,
-                Direction.Right => 3,
-                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-            };
-        }
-
-        public static Vector2 ToUnitVector(this Direction direction)
-        {
-            return direction switch
-            {
-                Direction.Up => Vector2.up,
-                Direction.Down => Vector2.down,
-                Direction.Left => Vector2.left,
-                Direction.Right => Vector2.right,
-                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
-            };
-        }
-
-        public static Vector3Int ToUnitVector3Int(this Direction direction)
+        public static Vector3Int ToVectorOffset(this Direction direction)
         {
             return direction switch
             {
@@ -49,21 +25,56 @@ namespace Procedural
             };
         }
 
-        public static Direction FromIndex(int i)
+        public static Vector3Int ToCornerVectorOffset(this Direction direction)
         {
-            return i switch
+            return direction switch
             {
-                0 => Direction.Up,
-                1 => Direction.Left,
-                2 => Direction.Down,
-                3 => Direction.Right,
-                _ => throw new ArgumentOutOfRangeException(nameof(i), i, null)
+                Direction.Up => new Vector3Int(0, 1),
+                Direction.Down => new Vector3Int(1, 0),
+                Direction.Left => new Vector3Int(0, 0),
+                Direction.Right => new Vector3Int(1, 1),
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
 
-        public static Vector3Int FromVector3(Vector3 vector3)
+        public static Direction Random(Direction? exclude)
         {
-            return new Vector3Int((int)vector3.x, (int)vector3.y, (int)vector3.z);
+            if (exclude == null)
+            {
+                return (Direction)UnityEngine.Random.Range(0, 4);
+            }
+
+            int num = UnityEngine.Random.Range(0, 4);
+            if ((Direction)num == exclude)
+            {
+                return (Direction)((num + UnityEngine.Random.Range(1, 4)) % 4);
+            }
+
+            return (Direction)num;
+        }
+
+        public static Direction Opposite(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => Direction.Down,
+                Direction.Down => Direction.Up,
+                Direction.Left => Direction.Right,
+                Direction.Right => Direction.Left,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+
+        public static Direction Adjacent(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => Direction.Left,
+                Direction.Down => Direction.Right,
+                Direction.Left => Direction.Down,
+                Direction.Right => Direction.Up,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
         }
     }
 }

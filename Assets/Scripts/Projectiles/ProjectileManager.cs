@@ -36,7 +36,7 @@ namespace Projectiles
             );
         }
 
-        public void Spawn(
+        public static void Spawn(
             Vector2 position,
             Positioner.Position offset,
             Positioner.Position positioner,
@@ -49,9 +49,9 @@ namespace Projectiles
         {
             for (int i = 0; i < amount; i++)
             {
-                Projectile projectile = _projectiles.Get();
+                Projectile projectile = Instance._projectiles.Get();
                 projectile.transform.position = position + offset(position, i);
-                projectile.Init(positioner, speed, effect, effAmount, o => _projectiles.Release(o), ignoreMode.GetLayerMask());
+                projectile.Init(positioner, speed, effect, effAmount, o => Instance._projectiles.Release(o), ignoreMode.GetLayerMask());
             }
         }
     }

@@ -8,11 +8,11 @@ namespace Utils
         [SerializeField] private int hp;
         [SerializeField] private bool invincible;
         [SerializeField] private float invincibleTime;
-        
+
         public event Action OnDeath;
         public event Action OnHealed;
         public event Action OnDamaged;
-        
+
         public bool Invincible => invincible;
         public int Hp
         {
@@ -22,7 +22,7 @@ namespace Utils
                 int prevHp = hp;
                 hp = value;
 
-                if (hp < 0)
+                if (hp <= 0)
                 {
                     hp = 0;
                     OnDeath?.Invoke();
@@ -44,7 +44,7 @@ namespace Utils
             {
                 return;
             }
-            
+
             _elapsedTime += Time.deltaTime;
 
             if (_elapsedTime > invincibleTime)
