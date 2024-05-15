@@ -13,7 +13,7 @@ namespace Procedural
 
     public static class DirectionExt
     {
-        public static Vector3Int GetCellOffset(this Direction direction)
+        public static Vector3Int ToVectorOffset(this Direction direction)
         {
             return direction switch
             {
@@ -21,6 +21,18 @@ namespace Procedural
                 Direction.Down => Vector3Int.down,
                 Direction.Left => Vector3Int.left,
                 Direction.Right => Vector3Int.right,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+
+        public static Vector3Int ToCornerVectorOffset(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => new Vector3Int(0, 1),
+                Direction.Down => new Vector3Int(1, 0),
+                Direction.Left => new Vector3Int(0, 0),
+                Direction.Right => new Vector3Int(1, 1),
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }
@@ -49,6 +61,18 @@ namespace Procedural
                 Direction.Down => Direction.Up,
                 Direction.Left => Direction.Right,
                 Direction.Right => Direction.Left,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+
+        public static Direction Adjacent(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => Direction.Left,
+                Direction.Down => Direction.Right,
+                Direction.Left => Direction.Down,
+                Direction.Right => Direction.Up,
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }

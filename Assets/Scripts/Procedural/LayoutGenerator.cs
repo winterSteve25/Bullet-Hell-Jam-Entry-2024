@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
+using Random = UnityEngine.Random;
 
 #if UNITY_EDITOR
 using System.Collections.Generic;
@@ -10,17 +12,35 @@ namespace Procedural
     public class LayoutGenerator : MonoBehaviour
     {
         [SerializeField] private int minRoomLength;
+        [SerializeField] private int maxRoomLength;
+        [SerializeField] private int minGapMargin;
+        [SerializeField] private int gapMargin;
         [SerializeField] private int width;
         [SerializeField] private int height;
         [SerializeField] private int sliceCount;
 
-        public Layout Generate()
+        public Layout Generate(List<PremadeRoom> premadeRooms)
         {
             Layout layout = new Layout(width, height);
 
             for (int i = 0; i < sliceCount; i++)
             {
-                layout.SliceRandomRect(minRoomLength);
+                layout.SliceRandomRect(minRoomLength + gapMargin);
+            }
+
+            layout.Build(minGapMargin, gapMargin, minRoomLength, maxRoomLength);
+            Direction spawnCorner = layout.RectIsClosestToCorner(layout.Spawn);
+
+            foreach (var premadeRoom in premadeRooms)
+            {
+                Direction spawnRoomAt = premadeRoom.FromSpawn switch {
+                    Distance.Far => spawnCorner.Opposite(),
+                    Distance.Mid => Random.Range(0, 1f) > 0.5f ? spawnCorner.Adjacent() : spawnCorner.Adjacent().Opposite(),
+                    Distance.Near => spawnCorner,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+                Vector2Int spawnRoomAtPos = layout.Whole.size;
             }
 
             return layout;
@@ -47,7 +67,7 @@ namespace Procedural
         [Button]
         private void TestGenerate()
         {
-            _test = Generate().Complete();
+            _test = Generate(new List<PremadeRoom>()).Build(minGapMargin, gapMargin, minRoomLength, maxRoomLength);
         }
 
         public Mesh GenerateQuadMesh(Vector3 bottomLeftCorner, float width, float height)
