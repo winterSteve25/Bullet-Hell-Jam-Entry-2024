@@ -51,8 +51,13 @@ namespace Effects
 
         public float Apply(Effect eff, float amount, bool forceApplyAll = false)
         {
+            if (eff is null || amount == 0)
+            {
+                return 0;
+            }
+
             var half = amount * 0.5f;
-            
+
             if (effects.ContainsKey(eff))
             {
                 if (forceApplyAll)
@@ -60,7 +65,7 @@ namespace Effects
                     effects[eff] += amount;
                     return 0;
                 }
-                
+
                 effects[eff] += half;
                 return half;
             }
@@ -71,7 +76,7 @@ namespace Effects
                 EffectsChanged(eff, half);
                 return half;
             }
-            
+
             effects.Add(eff, amount);
             EffectsChanged(eff, amount);
             return 0;
@@ -80,7 +85,7 @@ namespace Effects
         private void Apply(EffectStackDic effectStack)
         {
             List<(Effect, float)> changes = new List<(Effect, float)>();
-            
+
             foreach (var (eff, amount) in effectStack)
             {
                 changes.Add((eff, Apply(eff, amount)));
@@ -97,6 +102,11 @@ namespace Effects
             if (BothEffectsPresent(Effect.Oil, Effect.Fire, effectAdded))
             {
                 StatusEffect.Add<Burning>(this);
+            }
+
+            if (BothEffectsPresent(Effect.Fire, Effect.Water, effectAdded))
+            {
+                StatusEffect.Add<Steamed>(this);
             }
         }
 

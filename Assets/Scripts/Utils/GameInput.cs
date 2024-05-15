@@ -39,6 +39,11 @@ namespace Utils
             return CanInput() ? Input.GetAxis(axis) : 0;
         }
 
+        public static float GetAxisRaw(string axis)
+        {
+            return CanInput() ? Input.GetAxisRaw(axis) : 0;
+        }
+
         private static bool CanInput()
         {
             // implement later to block input in menus and such
