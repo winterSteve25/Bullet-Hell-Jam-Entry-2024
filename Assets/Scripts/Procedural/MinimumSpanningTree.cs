@@ -19,9 +19,9 @@ namespace Procedural
             parent[xSet] = ySet;
         }
 
-        public static List<Edge> KruskalMST(List<Edge> edges, int numberOfVertices)
+        public static HashSet<(int, int)> KruskalMST(List<Edge> edges, int numberOfVertices)
         {
-            List<Edge> minimumSpanningTree = new List<Edge>();
+            HashSet<(int, int)> minimumSpanningTree = new HashSet<(int, int)>();
             edges = edges.OrderBy(edge => edge.Weight).ToList();
             int[] parent = new int[numberOfVertices];
             for (int i = 0; i < numberOfVertices; i++)
@@ -33,12 +33,13 @@ namespace Procedural
                 Edge nextEdge = edges[index++];
                 int x = FindParent(parent, nextEdge.Source);
                 int y = FindParent(parent, nextEdge.Destination);
-                if (x != y)
+                if (x == y)
                 {
-                    minimumSpanningTree.Add(nextEdge);
-                    Union(parent, x, y);
-                    edgeCount++;
+                    continue;
                 }
+                minimumSpanningTree.Add((nextEdge.Source, nextEdge.Destination));
+                Union(parent, x, y);
+                edgeCount++;
             }
             return minimumSpanningTree;
         }

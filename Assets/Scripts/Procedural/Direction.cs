@@ -13,6 +13,18 @@ namespace Procedural
 
     public static class DirectionExt
     {
+        public static Vector3Int ToAxis(this Direction direction)
+        {
+            return direction switch
+            {
+                Direction.Up => Vector3Int.up,
+                Direction.Down => Vector3Int.up,
+                Direction.Left => Vector3Int.right,
+                Direction.Right => Vector3Int.right,
+                _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
+            };
+        }
+
         public static Vector3Int ToVectorOffset(this Direction direction)
         {
             return direction switch

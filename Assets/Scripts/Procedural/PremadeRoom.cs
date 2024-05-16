@@ -6,14 +6,23 @@ namespace Procedural
     public class PremadeRoom : MonoBehaviour
     {
         [SerializeField] private Distance fromSpawn;
-        [SerializeField] private Tilemap tilemap;
+        [SerializeField] private Vector2Int origin;
         [SerializeField] private int width;
         [SerializeField] private int height;
-        [SerializeField] private Vector2Int origin;
+        [SerializeField] private Grid grid;
+        [SerializeField] private Tilemap tilemap;
+        [SerializeField] private Tilemap floorTilemap;
 
         public Distance FromSpawn => fromSpawn;
         public int Width => width;
         public int Height => height;
+        public TileBase[] Tiles => tilemap.GetTilesBlock(new BoundsInt(origin.x, origin.y, 0, width, height, 1));
+        public TileBase[] FloorTiles => floorTilemap.GetTilesBlock(new BoundsInt(origin.x, origin.y, 0, width, height, 1));
+
+        private void Start()
+        {
+            Destroy(grid.gameObject);
+        }
 
         #if UNITY_EDITOR
         private void OnDrawGizmos() {
