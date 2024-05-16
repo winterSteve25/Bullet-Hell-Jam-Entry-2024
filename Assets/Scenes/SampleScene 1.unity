@@ -504,13 +504,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb98c4ffe6a34e359d9db07a9a4ea7a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  minRoomLength: 40
-  maxRoomLength: 60
-  minGapMargin: 8
-  gapMargin: 28
-  width: 400
-  height: 400
-  sliceCount: 40
+  minRoomLength: 16
+  minGap: 8
+  gap: 12
+  width: 200
+  height: 200
+  sliceCount: 50
+  removeChance: 0.18
+  pmRooms:
+  - {fileID: 257735084819674618, guid: b1a19d00af7c9004f95eeaa04e44a86a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0

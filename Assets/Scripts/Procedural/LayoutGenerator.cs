@@ -1,6 +1,5 @@
 ﻿using System;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 #if UNITY_EDITOR
 using System.Collections.Generic;
@@ -12,12 +11,14 @@ namespace Procedural
     public class LayoutGenerator : MonoBehaviour
     {
         [SerializeField] private int minRoomLength;
-        [SerializeField] private int maxRoomLength;
-        [SerializeField] private int minGapMargin;
-        [SerializeField] private int gapMargin;
+        [SerializeField] private int minGap;
+        [SerializeField] private int gap;
         [SerializeField] private int width;
         [SerializeField] private int height;
         [SerializeField] private int sliceCount;
+        [SerializeField] private float removeChance;
+
+        [SerializeField] private List<PremadeRoom> pmRooms;
 
         public Layout Generate(List<PremadeRoom> premadeRooms)
         {
@@ -25,42 +26,18 @@ namespace Procedural
 
             for (int i = 0; i < sliceCount; i++)
             {
-                layout.SliceRandomRect(minRoomLength + gapMargin);
+                layout.SliceRandomRect(minRoomLength + minGap);
             }
 
-            layout.Build(minGapMargin, gapMargin, minRoomLength, maxRoomLength);
-            Direction spawnCorner = layout.RectIsClosestToCorner(layout.Spawn);
-
-            foreach (var premadeRoom in premadeRooms)
+            retry:
+            try
             {
-                Direction spawnRoomAt = premadeRoom.FromSpawn switch {
-                    Distance.Far => spawnCorner.Opposite(),
-                    Distance.Mid => Random.Range(0, 1f) > 0.5f ? spawnCorner.Adjacent() : spawnCorner.Adjacent().Opposite(),
-                    Distance.Near => spawnCorner,
-                    _ => throw new ArgumentOutOfRangeException()
-                };
-
-                Vector2Int spawnRoomAtPos = layout.Whole.size * spawnRoomAt.ToCornerVectorOffset();
-                switch (spawnRoomAt) {
-                    case Direction.Up:
-                        spawnRoomAtPos.x -= premadeRoom.Width + Random.Range(minGapMargin, gapMargin);
-                        spawnRoomAtPos.y -= Random.Range(premadeRoom.Height, layout.Whole.height - premadeRoom.height);
-                        break;
-                    case Direction.Right:
-                        spawnRoomAtPos.x += Random.Range(minGapMargin, gapMargin);
-                        spawnRoomAtPos.y -= Random.Range(premadeRoom.Height, layout.Whole.height - premadeRoom.height);
-                        break;
-                    case Direction.Left:
-                        spawnRoomAtPos.x -= premadeRoom.Width + Random.Range(minGapMargin, gapMargin);
-                        spawnRoomAtPos.y += Random.Range(0, layout.Whole.height - premadeRoom.height);
-                        break;
-                    case Direction.Down:
-                        spawnRoomAtPos.x += Random.Range(minGapMargin, gapMargin);
-                        spawnRoomAtPos.y += Random.Range(0, layout.Whole.height - premadeRoom.height);
-                        break;
-                }
-
-                layout.PremadeRooms.Add((premadeRoom, new RectInt(spawnRoomAtPos.x, spawnRoomAtPos.y, premadeRoom.Width, premadeRoom.Height)));
+                layout.Build(minGap, gap, removeChance, premadeRooms);
+            }
+            catch (Exception)
+            {
+                // dont flame me its actually optimal
+                goto retry;
             }
 
             return layout;
@@ -68,29 +45,40 @@ namespace Procedural
 
         #region Debug
         #if UNITY_EDITOR
-        private List<RectInt> _test;
+        private List<RectInt> _rooms;
+        private List<Edge> _connections;
 
         private void OnDrawGizmos()
         {
-            if (_test == null) return;
+            if (_rooms == null) return;
             Gizmos.color = Color.cyan;
 
-            foreach (RectInt rect in _test)
+            foreach (RectInt rect in _rooms)
             {
                 Vector3 pos = new Vector3(rect.xMin, rect.yMin);
                 Gizmos.DrawSphere(pos, 0.5f);
                 Mesh mesh = GenerateQuadMesh(pos, rect.width, rect.height);
                 Gizmos.DrawWireMesh(mesh);
             }
+
+            if (_connections == null) return;
+            Gizmos.color = Color.red;
+
+            foreach (var connection in _connections)
+            {
+                Gizmos.DrawLine(_rooms[connection.Source].center, _rooms[connection.Destination].center);
+            }
         }
 
         [Button]
         private void TestGenerate()
         {
-            _test = Generate(new List<PremadeRoom>()).Build(minGapMargin, gapMargin, minRoomLength, maxRoomLength);
+            Layout layout = Generate(pmRooms);
+            _rooms = layout.LastBuild;
+            _connections = layout.Connection;
         }
 
-        public Mesh GenerateQuadMesh(Vector3 bottomLeftCorner, float width, float height)
+        private static Mesh GenerateQuadMesh(Vector3 bottomLeftCorner, float w, float h)
         {
             // Create a new mesh
             Mesh mesh = new Mesh();
@@ -98,12 +86,12 @@ namespace Procedural
             // Define vertices
             Vector3[] vertices = new Vector3[4];
             vertices[0] = bottomLeftCorner; // Bottom-left
-            vertices[1] = bottomLeftCorner + new Vector3(width, 0, 0); // Bottom-right
-            vertices[2] = bottomLeftCorner + new Vector3(0, height, 0); // Top-left
-            vertices[3] = bottomLeftCorner + new Vector3(width, height, 0); // Top-right
+            vertices[1] = bottomLeftCorner + new Vector3(w, 0, 0); // Bottom-right
+            vertices[2] = bottomLeftCorner + new Vector3(0, h, 0); // Top-left
+            vertices[3] = bottomLeftCorner + new Vector3(w, h, 0); // Top-right
 
             // Define triangles
-            int[] triangles = new int[]
+            int[] triangles =
             {
                 0, 2, 1, 1, 2, 3
             };
@@ -125,6 +113,7 @@ namespace Procedural
 
             return mesh;
         }
+
         #endif
         #endregion
     }

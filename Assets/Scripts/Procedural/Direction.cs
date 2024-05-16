@@ -25,14 +25,14 @@ namespace Procedural
             };
         }
 
-        public static Vector3Int ToCornerVectorOffset(this Direction direction)
+        public static Vector2Int ToCornerVectorOffset(this Direction direction)
         {
             return direction switch
             {
-                Direction.Up => new Vector3Int(0, 1),
-                Direction.Down => new Vector3Int(1, 0),
-                Direction.Left => new Vector3Int(0, 0),
-                Direction.Right => new Vector3Int(1, 1),
+                Direction.Up => new Vector2Int(0, 1),
+                Direction.Down => new Vector2Int(1, 0),
+                Direction.Left => new Vector2Int(0, 0),
+                Direction.Right => new Vector2Int(1, 1),
                 _ => throw new ArgumentOutOfRangeException(nameof(direction), direction, null)
             };
         }

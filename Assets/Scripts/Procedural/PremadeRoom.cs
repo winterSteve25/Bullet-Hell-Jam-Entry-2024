@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Tilemaps;
 
 namespace Procedural
 {
@@ -16,7 +17,7 @@ namespace Procedural
 
         #if UNITY_EDITOR
         private void OnDrawGizmos() {
-            Vector3 points = new Vector3[8] {
+            Vector3[] points = new Vector3[8] {
                 // bl to br
                 new Vector3(origin.x, origin.y),
                 new Vector3(origin.x + width, origin.y),
@@ -30,7 +31,7 @@ namespace Procedural
                 new Vector3(origin.x, origin.y + height),
                 new Vector3(origin.x + width, origin.y + height),
             };
-            Gizmos.DrawLinesList(points);
+            Gizmos.DrawLineList(points);
         }
         #endif
     }
