@@ -1,33 +1,28 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Cinemachine;
+using Player;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using Utils;
 using Random = UnityEngine.Random;
 
 namespace Procedural
 {
     public class RoomGenerator : MonoBehaviour
     {
-        [SerializeField] private TileBase wallUp;
-        [SerializeField] private TileBase wallLeft;
-        [SerializeField] private TileBase wallRight;
-        [SerializeField] private TileBase wallDown;
+        [SerializeField] private TileBase wall;
         [SerializeField] private TileBase floor;
-        [SerializeField] private TileBase wallCornerTL;
-        [SerializeField] private TileBase wallCornerTR;
-        [SerializeField] private TileBase wallCornerBL;
-        [SerializeField] private TileBase wallCornerBR;
         [SerializeField] private Tilemap tilemap;
         [SerializeField] private Tilemap floorTilemap;
-
         [SerializeField] private List<PremadeRoom> premadeRooms;
+        [SerializeField] private PlayerCombat playerPrefab;
+        [SerializeField] private Camera cam;
+        [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
         private FurnishedRoom Create(Vector2Int offset, int width, int height)
         {
             List<(Vector3Int, int)> doors = new List<(Vector3Int, int)>();
-            Dictionary<Vector3Int, TileBase> tiles = new Dictionary<Vector3Int, TileBase>();
             Dictionary<Vector3Int, TileBase> floorTiles = new Dictionary<Vector3Int, TileBase>();
             Dictionary<Vector3Int, GameObject> props = new Dictionary<Vector3Int, GameObject>();
 
@@ -37,51 +32,15 @@ namespace Procedural
                 {
                     Vector3Int pos = new Vector3Int(i + offset.x, j + offset.y);
 
-                    if (j == 0 && i == 0)
+                    if (j == 0 && i == 0 ||
+                        j == 0 && i == width - 1 ||
+                        i == 0 && j == height - 1 ||
+                        i == width - 1 && j == height - 1 ||
+                        i == 0 ||
+                        i == width - 1 ||
+                        j == height - 1 ||
+                        j == 0)
                     {
-                        tiles.Add(pos, wallCornerBL);
-                        continue;
-                    }
-
-                    if (j == 0 && i == width - 1)
-                    {
-                        tiles.Add(pos, wallCornerBR);
-                        continue;
-                    }
-
-                    if (i == 0 && j == height - 1)
-                    {
-                        tiles.Add(pos, wallCornerTL);
-                        continue;
-                    }
-
-                    if (i == width - 1 && j == height - 1)
-                    {
-                        tiles.Add(pos, wallCornerTR);
-                        continue;
-                    }
-
-                    if (i == 0)
-                    {
-                        tiles.Add(pos, wallLeft);
-                        continue;
-                    }
-
-                    if (i == width - 1)
-                    {
-                        tiles.Add(pos, wallRight);
-                        continue;
-                    }
-
-                    if (j == height - 1)
-                    {
-                        tiles.Add(pos, wallUp);
-                        continue;
-                    }
-
-                    if (j == 0)
-                    {
-                        tiles.Add(pos, wallDown);
                         continue;
                     }
 
@@ -89,12 +48,12 @@ namespace Procedural
                 }
             }
 
-            return new FurnishedRoom(doors, tiles, floorTiles, props, width, height);
+            return new FurnishedRoom(doors, floorTiles, props, width, height);
         }
 
         private void Place(FurnishedRoom room)
         {
-            tilemap.SetTiles(room.Tiles.Keys.ToArray(), room.Tiles.Values.ToArray());
+            tilemap.SetTiles(room.FloorTiles.Keys.ToArray(), Enumerable.Range(0, room.FloorTiles.Keys.Count).Select(_ => (TileBase)null).ToArray());
             floorTilemap.SetTiles(room.FloorTiles.Keys.ToArray(), room.FloorTiles.Values.ToArray());
         }
 
@@ -103,10 +62,10 @@ namespace Procedural
             int rangeXFrom = Mathf.Max(room1.xMin, room2.xMin);
             int rangeXto = Mathf.Min(room1.xMax, room2.xMax);
 
-            // tunnel size is 4 so
-            if (rangeXto - rangeXFrom > 5)
+            // tunnel size is 2 so
+            if (rangeXto - rangeXFrom > 4)
             {
-                int pathPosX = Random.Range(rangeXFrom + 1, rangeXto - 4);
+                int pathPosX = Random.Range(rangeXFrom + 1, rangeXto - 3);
                 if (room1.yMax < room2.yMin)
                 {
                     // vertical, from the top of the first room to the bottom of the second
@@ -122,7 +81,7 @@ namespace Procedural
                         return false;
                     }
 
-                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(3, 0), point2 + new Vector3Int(3, 0)))
+                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(2, 0), point2 + new Vector3Int(2, 0)))
                     {
                         joints = null;
                         otherDoor = new Vector3Int();
@@ -151,7 +110,7 @@ namespace Procedural
                         return false;
                     }
 
-                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(3, 0), point2 + new Vector3Int(3, 0)))
+                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(2, 0), point2 + new Vector3Int(2, 0)))
                     {
                         joints = null;
                         otherDoor = new Vector3Int();
@@ -172,9 +131,9 @@ namespace Procedural
             int rangeYFrom = Mathf.Max(room1.yMin, room2.yMin);
             int rangeYTo = Mathf.Min(room1.yMax, room2.yMax);
 
-            if (rangeYTo - rangeYFrom > 5)
+            if (rangeYTo - rangeYFrom > 4)
             {
-                int pathPosY = Random.Range(rangeYFrom + 1, rangeYTo - 4);
+                int pathPosY = Random.Range(rangeYFrom + 1, rangeYTo - 3);
                 if (room1.xMin > room2.xMax)
                 {
                     // horizontal, from the left of the first to the right of the second
@@ -190,7 +149,7 @@ namespace Procedural
                         return false;
                     }
 
-                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(0, 3), point2 + new Vector3Int(0, 3)))
+                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(0, 2), point2 + new Vector3Int(0, 2)))
                     {
                         joints = null;
                         otherDoor = new Vector3Int();
@@ -219,7 +178,7 @@ namespace Procedural
                         return false;
                     }
 
-                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(0, 3), point2 + new Vector3Int(0, 3)))
+                    if (GoesThroughRooms(rooms, point1 + new Vector3Int(0, 2), point2 + new Vector3Int(0, 2)))
                     {
                         joints = null;
                         otherDoor = new Vector3Int();
@@ -281,6 +240,9 @@ namespace Procedural
 
         public bool BuildLayout(Layout builtLayout)
         {
+            BoundsInt wholeBounds = new BoundsInt(builtLayout.Whole.x - 100, builtLayout.Whole.y - 100, 0, builtLayout.Whole.width + 200, builtLayout.Whole.height + 200, 1);
+            tilemap.SetTilesBlock(wholeBounds, Enumerable.Range(0, wholeBounds.size.x * wholeBounds.size.y).Select(_ => wall).ToArray());
+
             List<(RectInt, bool)> lastBuild = builtLayout.LastBuild;
             Dictionary<int, (List<List<TunnelJoint>>, List<Vector3Int>)> tunnels = new Dictionary<int, (List<List<TunnelJoint>>, List<Vector3Int>)>();
             Dictionary<int, List<int>> tunnelRecord = new Dictionary<int, List<int>>();
@@ -365,8 +327,8 @@ namespace Procedural
             foreach (var (premadeRoom, rect) in builtLayout.PremadeRooms)
             {
                 BoundsInt boundsInt = new BoundsInt(rect.x, rect.y, 0, rect.width, rect.height, 1);
-                floorTilemap.SetTilesBlock(boundsInt, premadeRoom.FloorTiles);
-                tilemap.SetTilesBlock(boundsInt, premadeRoom.Tiles);
+                floorTilemap.SetTilesBlock(boundsInt, Enumerable.Range(0, boundsInt.size.x * boundsInt.size.y).Select(_ => floor).ToArray());
+                tilemap.SetTilesBlock(boundsInt, new TileBase[boundsInt.size.x * boundsInt.size.y]);
                 PremadeRoom room = Instantiate(premadeRoom, transform);
                 room.transform.position = tilemap.CellToWorld(new Vector3Int(rect.x, rect.y));
             }
@@ -386,20 +348,28 @@ namespace Procedural
                 switch (first.direction)
                 {
                     case Direction.Up:
-                        size.x = 4;
-                        size.y = Mathf.Abs(next.position.y - first.position.y);
+                        size.x = 2;
+                        size.y = Mathf.Abs(next.position.y - first.position.y) + 4;
+                        tunnelStartPos.x += 1;
+                        tunnelStartPos.y -= 2;
                         break;
                     case Direction.Down:
-                        size.x = 4;
-                        size.y = Mathf.Abs(next.position.y - first.position.y);
+                        size.x = 2;
+                        size.y = Mathf.Abs(next.position.y - first.position.y) + 4;
+                        tunnelStartPos.x += 1;
+                        tunnelStartPos.y += 2;
                         break;
                     case Direction.Left:
-                        size.x = Mathf.Abs(next.position.x - first.position.x);
-                        size.y = 4;
+                        size.x = Mathf.Abs(next.position.x - first.position.x) + 4;
+                        size.y = 2;
+                        tunnelStartPos.y += 1;
+                        tunnelStartPos.x += 2;
                         break;
                     case Direction.Right:
-                        size.x = Mathf.Abs(next.position.x - first.position.x);
-                        size.y = 4;
+                        size.x = Mathf.Abs(next.position.x - first.position.x) + 4;
+                        size.y = 2;
+                        tunnelStartPos.y += 1;
+                        tunnelStartPos.x -= 2;
                         break;
                     default:
                         throw new ArgumentOutOfRangeException();
@@ -408,8 +378,10 @@ namespace Procedural
                 size.z = 1;
                 BoundsInt bounds = new BoundsInt(tunnelStartPos, size);
                 TileBase[] tiles = Enumerable.Range(0, bounds.size.x * bounds.size.y).Select(_ => floor).ToArray();
+                TileBase[] air = new TileBase[bounds.size.x * bounds.size.y];
 
                 floorTilemap.SetTilesBlock(bounds, tiles);
+                tilemap.SetTilesBlock(bounds, air);
             }
         }
 
@@ -434,6 +406,12 @@ namespace Procedural
 
                 goto retry;
             }
+
+            PlayerCombat player = Instantiate(playerPrefab);
+            Transform playerTransform = player.transform;
+            playerTransform.position = _layout.LastBuild[_layout.Spawn].Item1.center;
+            player.cam = cam;
+            virtualCamera.Follow = playerTransform;
         }
     }
 }

@@ -7,7 +7,7 @@ namespace Player
 {
     public class PlayerCombat : MonoBehaviour
     {
-        [SerializeField] private Camera cam;
+        public Camera cam;
         [SerializeField] private float bulletSpeed;
 
         private void Update()
