@@ -135,10 +135,10 @@ MonoBehaviour:
   horizontalDampingWhenStopping: 0.9
   horizontalDampingWhenTurning: 0.9
   speed: 0.935
-  accuracy: 0
+  inaccuracy: 0.2
   rangeSqr: 200
-  projectileSpeed: 10
-  shootCooldown: 1
+  projectileSpeed: 20
+  shootCooldown: 0.25
 --- !u!61 &7504219251531585116
 BoxCollider2D:
   m_ObjectHideFlags: 0

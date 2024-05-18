@@ -1,4 +1,3 @@
-using System;
 using Effects;
 using UnityEngine;
 using UnityEngine.Pool;

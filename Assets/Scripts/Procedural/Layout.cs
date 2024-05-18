@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Procedural.Delaunay;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
@@ -10,18 +11,154 @@ namespace Procedural
     {
         public readonly List<RectInt> Rectangles = new List<RectInt>();
         public readonly List<RectInt> SacredRectangles = new List<RectInt>();
+        public readonly List<(PremadeRoom, RectInt)> PremadeRooms = new List<(PremadeRoom, RectInt)>();
         public readonly RectInt Whole;
 
         private int _spawn;
         private int _numVertSplit;
-        private List<RectInt> _built;
+        private HashSet<(int, int)> _connections;
+        private List<(RectInt, bool)> _build;
 
-        public int Spawn => Spawn;
+        public List<(RectInt, bool)> LastBuild => _build;
+        public HashSet<(int, int)> Connection => _connections;
+        public int Spawn => _spawn;
 
         public Layout(int width, int height)
         {
             Whole = new RectInt(0, 0, width, height);
             Rectangles.Add(Whole);
+        }
+
+        public void DrawRoomBlockOuts()
+        {
+            if (_build == null) return;
+            Gizmos.color = Color.cyan;
+
+            foreach ((RectInt rect, _) in _build)
+            {
+                Vector3 pos = new Vector3(rect.xMin, rect.yMin);
+                Gizmos.DrawSphere(pos, 0.5f);
+                Mesh mesh = GenerateQuadMesh(pos, rect.width, rect.height);
+                Gizmos.DrawWireMesh(mesh);
+            }
+        }
+
+        public void DrawConnections()
+        {
+            if (_connections == null) return;
+            Gizmos.color = Color.red;
+
+            foreach (var connection in _connections)
+            {
+                Gizmos.DrawLine(_build[connection.Item1].Item1.center, _build[connection.Item2].Item1.center);
+            }
+        }
+
+        public void Build(int minGap, int gap, float removeChance, List<PremadeRoom> premadeRooms)
+        {
+            PremadeRooms.Clear();
+            List<(RectInt, bool)> rooms = new List<(RectInt, bool)>();
+            Vector2Int? lastRemovedPos = null;
+
+            foreach (var rect in SacredRectangles.Concat(Rectangles))
+            {
+                if ((lastRemovedPos == null || (rect.position - lastRemovedPos.Value).sqrMagnitude > Whole.width / 3) && Random.Range(0, 1f) < removeChance)
+                {
+                    lastRemovedPos = rect.position;
+                    continue;
+                }
+
+                RectInt r = rect;
+                int wMod = Random.Range(minGap, Mathf.Min(gap, r.width));
+                int hMod = Random.Range(minGap, Mathf.Min(gap, r.height));
+
+                r.width -= wMod;
+                r.height -= hMod;
+                r.x -= Random.Range(0, wMod / 2);
+                r.y -= Random.Range(0, hMod / 2);
+
+                rooms.Add((r, false));
+            }
+
+            _spawn = Random.Range(0, rooms.Count);
+            Direction spawnCorner = RectIsClosestToCorner(rooms, _spawn);
+
+            foreach (var premadeRoom in premadeRooms)
+            {
+                Direction spawnRoomAt = premadeRoom.FromSpawn switch
+                {
+                    Distance.Far => spawnCorner.Opposite(),
+                    Distance.Mid => Random.Range(0, 1f) > 0.5f ? spawnCorner.Adjacent() : spawnCorner.Adjacent().Opposite(),
+                    Distance.Near => spawnCorner,
+                    _ => throw new ArgumentOutOfRangeException()
+                };
+
+                Vector2Int spawnRoomAtPos = Whole.size * spawnRoomAt.ToCornerVectorOffset();
+                switch (spawnRoomAt)
+                {
+                    case Direction.Up:
+                        spawnRoomAtPos.x -= premadeRoom.Width + Random.Range(minGap, gap);
+                        spawnRoomAtPos.y -= Random.Range(premadeRoom.Height, Whole.height - premadeRoom.Height);
+                        break;
+                    case Direction.Right:
+                        spawnRoomAtPos.x += Random.Range(minGap, gap);
+                        spawnRoomAtPos.y -= Random.Range(premadeRoom.Height, Whole.height - premadeRoom.Height);
+                        break;
+                    case Direction.Left:
+                        spawnRoomAtPos.x -= premadeRoom.Width + Random.Range(minGap, gap);
+                        spawnRoomAtPos.y += Random.Range(0, Whole.height - premadeRoom.Height);
+                        break;
+                    case Direction.Down:
+                        spawnRoomAtPos.x += Random.Range(minGap, gap);
+                        spawnRoomAtPos.y += Random.Range(0, Whole.height - premadeRoom.Height);
+                        break;
+                }
+
+                RectInt rectInt = new RectInt(spawnRoomAtPos.x, spawnRoomAtPos.y, premadeRoom.Width, premadeRoom.Height);
+                PremadeRooms.Add((premadeRoom, rectInt));
+                rooms.Add((rectInt, true));
+            }
+
+            List<Edge> edges = new List<Edge>();
+            List<Triangle2D> delaunays = new List<Triangle2D>();
+            List<Vector2> centers = new List<Vector2>();
+            Dictionary<Vector2Int, int> nodes = new Dictionary<Vector2Int, int>();
+
+            for (int i = 0; i < rooms.Count; i++)
+            {
+                (RectInt r, _) = rooms[i];
+                centers.Add(r.center);
+                Vector2Int c = Cast(r.center);
+                nodes.Add(c, i);
+            }
+
+            DelaunayTriangulation triangulation = new DelaunayTriangulation();
+            triangulation.Triangulate(centers);
+            triangulation.GetTrianglesDiscardingHoles(delaunays);
+
+            foreach (var tri in delaunays)
+            {
+                edges.Add(new Edge(nodes[Cast(tri.p0)], nodes[Cast(tri.p1)], (int)(tri.p1 - tri.p0).magnitude));
+                edges.Add(new Edge(nodes[Cast(tri.p1)], nodes[Cast(tri.p2)], (int)(tri.p2 - tri.p1).magnitude));
+                edges.Add(new Edge(nodes[Cast(tri.p2)], nodes[Cast(tri.p0)], (int)(tri.p0 - tri.p2).magnitude));
+            }
+
+            HashSet<(int, int)> finishedEdges = MinimumSpanningTree.KruskalMST(edges, rooms.Count);
+
+            foreach (var tri in delaunays)
+            {
+                if (!(Random.Range(0, 1f) < 0.15f))
+                {
+                    continue;
+                }
+
+                int source = nodes[Cast(tri.p0)];
+                int dest = nodes[Cast(tri.p1)];
+                finishedEdges.Add((source, dest));
+            }
+
+            _build = rooms;
+            _connections = finishedEdges;
         }
 
         public void SliceRandomRect(int minLength)
@@ -35,13 +172,27 @@ namespace Procedural
             SliceRect(index, minLength);
         }
 
-        private int SliceRect(int index, int minLength)
+        private void SliceRect(int index, int minLength)
         {
             RectInt rect = Rectangles[index];
             Rectangles.RemoveAt(index);
             RectInt newRect;
 
-            if (rect.width > minLength * 2 && Random.Range(0, 1f) < ProbabilityToVert())
+            if (rect.width < minLength * 2)
+            {
+                int currentHeight = rect.height;
+                int newHeight = Random.Range(minLength, rect.height - minLength);
+                newRect = new RectInt(rect.xMin, rect.yMin + (currentHeight - newHeight), rect.width, newHeight);
+                rect.height = currentHeight - newHeight;
+            }
+            else if (rect.height < minLength * 2)
+            {
+                int currentWidth = rect.width;
+                int newWidth = Random.Range(minLength, rect.width - minLength);
+                newRect = new RectInt(rect.xMin + (currentWidth - newWidth), rect.yMin, newWidth, rect.height);
+                rect.width = currentWidth - newWidth;
+            }
+            else if (Random.Range(0, 1f) < ProbabilityToVert())
             {
                 _numVertSplit++;
                 int currentWidth = rect.width;
@@ -49,7 +200,7 @@ namespace Procedural
                 newRect = new RectInt(rect.xMin + (currentWidth - newWidth), rect.yMin, newWidth, rect.height);
                 rect.width = currentWidth - newWidth;
             }
-            else if (rect.height > minLength * 2)
+            else
             {
                 _numVertSplit--;
                 int currentHeight = rect.height;
@@ -57,18 +208,10 @@ namespace Procedural
                 newRect = new RectInt(rect.xMin, rect.yMin + (currentHeight - newHeight), rect.width, newHeight);
                 rect.height = currentHeight - newHeight;
             }
-            else
-            {
-                SacredRectangles.Add(rect);
-                return 0;
-            }
-
-            int i = 0;
 
             if (CanBeSliced(newRect, minLength))
             {
                 Rectangles.Add(newRect);
-                i++;
             }
             else
             {
@@ -78,72 +221,21 @@ namespace Procedural
             if (CanBeSliced(rect, minLength))
             {
                 Rectangles.Add(rect);
-                i++;
             }
             else
             {
                 SacredRectangles.Add(rect);
             }
-
-            return i;
         }
 
-        private float ProbabilityToVert()
+        private Direction RectIsClosestToCorner(List<(RectInt, bool)> rooms, int i)
         {
-            return Mathf.Pow(2, -(_numVertSplit + 1));
-        }
-
-        private bool CanBeSliced(RectInt rect, int minLength)
-        {
-            return rect.width >= minLength * 2 || rect.height >= minLength * 2;
-        }
-
-        public List<RectInt> Build(int minGapMargin, int gapMargin, int minRoomLength, int maxRoomLength)
-        {
-            if (_built != null) return _built;
-
-            List<RectInt> rooms = new List<RectInt>();
-
-            for (int i = 0; i < Rectangles.Count; i++)
-            {
-                RectInt rect = Rectangles[i];
-                if (rect.width < maxRoomLength && rect.height < maxRoomLength)
-                {
-                    continue;
-                }
-
-                int im = SliceRect(i, minRoomLength);
-
-                if (im > 0)
-                {
-                    i--;
-                }
-            }
-
-            foreach (var rect in SacredRectangles.Concat(Rectangles))
-            {
-                RectInt r = rect;
-
-                r.width -= Random.Range(minGapMargin, Mathf.Min(gapMargin, r.width));
-                r.height -= Random.Range(minGapMargin, Mathf.Min(gapMargin, r.height));
-
-                rooms.Add(r);
-            }
-
-            _spawn = Random.Range(0, rooms.Count);
-            _built = rooms;
-
-            return rooms;
-        }
-
-        public Direction RectIsClosestToCorner(int i)
-        {
-            if (_built == null)
+            if (rooms == null)
             {
                 throw new ArgumentException("Layout has not been built");
             }
 
-            RectInt r = _built[i];
+            (RectInt r, _) = rooms[i];
             bool x = IsCloserToFirst(r.x, Whole.x, Whole.width);
             bool y = IsCloserToFirst(r.y, Whole.y, Whole.height);
 
@@ -156,19 +248,63 @@ namespace Procedural
             };
         }
 
-        private bool IsCloserToFirst(int number, int option1, int option2)
+        private float ProbabilityToVert()
+        {
+            return Mathf.Pow(2, -(_numVertSplit + 1));
+        }
+
+        private static bool CanBeSliced(RectInt rect, int minLength)
+        {
+            return rect.width >= minLength * 2 || rect.height >= minLength * 2;
+        }
+
+        private static bool IsCloserToFirst(int number, int option1, int option2)
         {
             int distanceToOption1 = Mathf.Abs(number - option1);
             int distanceToOption2 = Mathf.Abs(number - option2);
+            return distanceToOption1 < distanceToOption2;
+        }
 
-            if (distanceToOption1 < distanceToOption2)
+        private static Vector2Int Cast(Vector2 pt)
+        {
+            return new Vector2Int(Mathf.FloorToInt((pt.x + 10) / 20), Mathf.FloorToInt((pt.y + 10) / 20));
+        }
+
+
+        private static Mesh GenerateQuadMesh(Vector3 bottomLeftCorner, float w, float h)
+        {
+            // Create a new mesh
+            Mesh mesh = new Mesh();
+
+            // Define vertices
+            Vector3[] vertices = new Vector3[4];
+            vertices[0] = bottomLeftCorner; // Bottom-left
+            vertices[1] = bottomLeftCorner + new Vector3(w, 0, 0); // Bottom-right
+            vertices[2] = bottomLeftCorner + new Vector3(0, h, 0); // Top-left
+            vertices[3] = bottomLeftCorner + new Vector3(w, h, 0); // Top-right
+
+            // Define triangles
+            int[] triangles =
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+                0, 2, 1, 1, 2, 3
+            };
+
+            // Define UVs
+            Vector2[] uvs = new Vector2[4];
+            uvs[0] = new Vector2(0, 0);
+            uvs[1] = new Vector2(1, 0);
+            uvs[2] = new Vector2(0, 1);
+            uvs[3] = new Vector2(1, 1);
+
+            // Assign vertices, triangles, and UVs to the mesh
+            mesh.vertices = vertices;
+            mesh.triangles = triangles;
+            mesh.uv = uvs;
+
+            // Recalculate normals for correct shading
+            mesh.RecalculateNormals();
+
+            return mesh;
         }
     }
 }

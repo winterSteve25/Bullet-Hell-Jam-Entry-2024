@@ -7,7 +7,6 @@ namespace Enemies
 {
     public class RangedRobot : Enemy
     {
-        [SerializeField] private float accuracy;
         [SerializeField] private float rangeSqr;
         [SerializeField] private float projectileSpeed;
         [SerializeField] private float shootCooldown;
@@ -37,12 +36,20 @@ namespace Enemies
 
                 Move(dir);
             }
+            else
+            {
+                Vector2 dir = playerPos - currPos;
+                dir = GoLeftOrRight(dir, rangeSqr);
+                Move(dir);
+            }
         }
 
         private void Shoot(Vector2 target, Vector2 currPos)
         {
             _elapsedTime = 0;
-            Vector2 dir = (target - currPos).Rotate(Random.Range(-90 * accuracy, 90 * accuracy));
+            Vector2 dir = target - currPos;
+            LookAt(dir);
+            dir = dir.Rotate(Random.Range(-90 * inaccuracy, 90 * inaccuracy));
 
             ProjectileManager.Spawn(
                 currPos,

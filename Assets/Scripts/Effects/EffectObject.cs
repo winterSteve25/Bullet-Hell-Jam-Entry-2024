@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using Effects.Status;
 using UnityEngine;
 using Utils;
@@ -9,6 +10,7 @@ namespace Effects
     public class EffectObject : MonoBehaviour
     {
         [SerializeField] private EffectStackDic effects;
+        [SerializeField] private Effect inheritElement;
 
         private HitPoints _hp;
         public int Hp
@@ -18,10 +20,13 @@ namespace Effects
         }
 
         public bool Invincible => _hp.Invincible;
+        public Effect InheritElement => inheritElement;
 
         private void Start()
         {
             _hp = GetComponent<HitPoints>();
+            if (inheritElement != null) return;
+            inheritElement = effects.First().Key;
         }
 
         private void OnCollisionEnter2D(Collision2D other)
@@ -99,10 +104,10 @@ namespace Effects
 
         private void EffectsChanged(Effect effectAdded, float amount)
         {
-            if (BothEffectsPresent(Effect.Oil, Effect.Fire, effectAdded))
-            {
-                StatusEffect.Add<Burning>(this);
-            }
+            // if (BothEffectsPresent(Effect.Oil, Effect.Fire, effectAdded))
+            // {
+                // StatusEffect.Add<Burning>(this);
+            // }
 
             if (BothEffectsPresent(Effect.Fire, Effect.Water, effectAdded))
             {
