@@ -262,7 +262,7 @@ MonoBehaviour:
   horizontalDamping: 0.9
   horizontalDampingWhenStopping: 0.9
   horizontalDampingWhenTurning: 0.9
-  speed: 1
+  speed: 0.9
   inaccuracy: 0.15
   runAwayRangeSqr: 70
   rangeSqr: 200

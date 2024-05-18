@@ -23,11 +23,11 @@ namespace Utils
             fHorizontalVelocity += input;
 
             if (Mathf.Abs(input) < 0.01f)
-                fHorizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenStopping, Time.fixedDeltaTime * 10);
-            else if (Mathf.Sign(input) != Mathf.Sign(fHorizontalVelocity))
-                fHorizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenTurning, Time.fixedDeltaTime * 10);
+                fHorizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenStopping, Time.deltaTime * 10f);
+            else if (Math.Abs(Mathf.Sign(input) - Mathf.Sign(fHorizontalVelocity)) > 0.01)
+                fHorizontalVelocity *= Mathf.Pow(1f - horizontalDampingWhenTurning, Time.deltaTime * 10f);
             else
-                fHorizontalVelocity *= Mathf.Pow(1f - horizontalDamping, Time.fixedDeltaTime * 10);
+                fHorizontalVelocity *= Mathf.Pow(1f - horizontalDamping, Time.deltaTime * 10f);
 
             return fHorizontalVelocity;
         }
