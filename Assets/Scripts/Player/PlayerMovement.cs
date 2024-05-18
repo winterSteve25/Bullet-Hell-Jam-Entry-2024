@@ -27,9 +27,9 @@ namespace Player
             _playerSpeed = speed;
         }
 
-        private void Update()
+        private void FixedUpdate()
         {
-            _elapsedTime += Time.deltaTime;
+            _elapsedTime += Time.fixedDeltaTime;
 
             float hv = CalculateVelocity(Rigidbody.velocity.x, GameInput.GetAxisRaw("Horizontal"));
             float vv = CalculateVelocity(Rigidbody.velocity.y, GameInput.GetAxisRaw("Vertical"));

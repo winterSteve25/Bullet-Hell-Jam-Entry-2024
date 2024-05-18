@@ -1,27 +1,39 @@
 ﻿using System;
 using Effects;
+using Player;
 using UnityEngine;
 using Utils;
 
-namespace Player
+namespace Projectiles
 {
-    public class AbsorptionBullet : MovementBase
+    public class AbsorptionBullet : MonoBehaviour
     {
         private Action<EffectObject> _onHit;
         private Vector2 _direction;
+        private float _elapsedTime;
+        private Positioner.Position _position;
+        private float _speed;
 
-        public void Init(Action<EffectObject> onHit, Vector2 direction)
+        public void Init(
+            float speed,
+            Action<EffectObject> onHit,
+            Vector2 direction,
+            Positioner.Position position
+        )
         {
+            _speed = speed;
+            _position = position;
             _onHit = onHit;
             _direction = direction;
+            _elapsedTime = 0;
         }
 
         private void Update()
         {
-            float hv = CalculateVelocity(Rigidbody.velocity.x, _direction.x);
-            float vv = CalculateVelocity(Rigidbody.velocity.y, _direction.y);
-            Rigidbody.velocity = new Vector2(hv * speed, vv * speed);
-            Rigidbody.velocity.Normalize();
+            float dt = Time.deltaTime;
+            _elapsedTime += dt;
+            Vector2 translation = _position(transform.position, _elapsedTime) * (dt * _speed);
+            transform.Translate(translation);
 
             if (((Vector2)transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
             {

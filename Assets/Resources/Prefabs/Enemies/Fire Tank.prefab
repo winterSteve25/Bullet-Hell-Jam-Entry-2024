@@ -86,7 +86,7 @@ MonoBehaviour:
   horizontalDamping: 0.9
   horizontalDampingWhenStopping: 0.9
   horizontalDampingWhenTurning: 0.9
-  speed: 0.85
+  speed: 0.9
   inaccuracy: 0
   rangeSqr: 200
   projectileSpeed: 10

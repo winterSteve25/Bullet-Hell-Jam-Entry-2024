@@ -75,7 +75,7 @@ namespace Player
                     Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
                     Vector2 dir = mousePos - position;
                     bullet.transform.position = position;
-                    bullet.Init(hit =>
+                    bullet.Init(bulletSpeed,hit =>
                     {
                         _waitingForHit = false;
                         if (hit is null)
@@ -86,7 +86,7 @@ namespace Player
 
                         _elementSelected = hit.InheritElement;
                         _elementAmount = 100;
-                    }, dir.normalized);
+                    }, dir.normalized, Positioner.Directional(dir));
                     _absorptionMode = false;
                     _waitingForHit = true;
                 }
