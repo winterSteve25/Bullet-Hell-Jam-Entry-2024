@@ -1,15 +1,16 @@
 ﻿using Player;
 using Projectiles;
 using UnityEngine;
-using Utils;
 
 namespace Enemies
 {
-    public class RangedRobot : Enemy
+    public class Hound : Enemy
     {
-        [SerializeField] private float rangeSqr;
         [SerializeField] private float projectileSpeed;
-        [SerializeField] private float shootCooldown;
+        [SerializeField] private float attackCooldown;
+        [SerializeField] private float rangeSqr;
+        [SerializeField] private float meleeRangeThreshold;
+        [SerializeField] private float meleeRange;
 
         private float _elapsedTime;
 
@@ -19,22 +20,30 @@ namespace Enemies
             Vector2 currPos = transform.position;
             _elapsedTime += Time.deltaTime;
 
-            if (_elapsedTime < shootCooldown)
-            {
-                return;
-            }
-
             if (HasLineOfSight(playerPos, currPos, rangeSqr))
             {
-                Vector2 dir = playerPos - currPos;
-                if (dir.sqrMagnitude < rangeSqr)
+                if (_elapsedTime < attackCooldown)
                 {
-                    Shoot(PredictPlayerPos(), currPos);
-                    Move(Vector2.zero);
                     return;
                 }
 
-                Move(dir);
+                Vector2 dir = playerPos - currPos;
+                if (dir.sqrMagnitude < meleeRangeThreshold)
+                {
+                    if (dir.sqrMagnitude < meleeRange)
+                    {
+                        _elapsedTime = 0;
+                        Melee();
+                        return;
+                    }
+
+                    Move(dir.normalized);
+                    return;
+                }
+
+                _elapsedTime = 0;
+                Shoot(playerPos, currPos);
+                Move(Vector2.zero);
             }
             else
             {
@@ -46,11 +55,7 @@ namespace Enemies
 
         private void Shoot(Vector2 target, Vector2 currPos)
         {
-            _elapsedTime = 0;
             Vector2 dir = target - currPos;
-            LookAt(dir);
-            dir = dir.Rotate(Random.Range(-90 * inaccuracy, 90 * inaccuracy));
-
             ProjectileManager.Spawn(
                 currPos,
                 Positioner.Zero(),
@@ -63,11 +68,8 @@ namespace Enemies
             );
         }
 
-        private void OnDrawGizmos()
+        private void Melee()
         {
-            Vector2 currPos = transform.position;
-            Gizmos.color = Color.red;
-            Gizmos.DrawRay(currPos, PredictPlayerPos() - currPos);
         }
     }
 }

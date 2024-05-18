@@ -53,8 +53,9 @@ namespace Procedural
 
         private void Place(FurnishedRoom room)
         {
-            tilemap.SetTiles(room.FloorTiles.Keys.ToArray(), Enumerable.Range(0, room.FloorTiles.Keys.Count).Select(_ => (TileBase)null).ToArray());
-            floorTilemap.SetTiles(room.FloorTiles.Keys.ToArray(), room.FloorTiles.Values.ToArray());
+            Vector3Int[] positionArray = room.FloorTiles.Keys.ToArray();
+            tilemap.SetTiles(positionArray, Enumerable.Range(0, room.FloorTiles.Keys.Count).Select(_ => (TileBase)null).ToArray());
+            floorTilemap.SetTiles(positionArray, room.FloorTiles.Values.ToArray());
         }
 
         private bool TryBuildTunnel(List<(RectInt, bool)> rooms, RectInt room1, RectInt room2, out List<TunnelJoint> joints, out Vector3Int otherDoor)

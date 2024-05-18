@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e8120390f45b4e1da505826b9065119e, type: 3}
-  m_Name: Fire
+  m_Name: Plant
   m_EditorClassIdentifier: 
-  icon: {fileID: -1036613116, guid: 69180105c89855f4e94ad8b416f68a25, type: 3}
-  displayName: Fire
-  color: {r: 0.8666667, g: 0.10980392, b: 0.101960786, a: 1}
+  icon: {fileID: -1616606257, guid: 69180105c89855f4e94ad8b416f68a25, type: 3}
+  displayName: Plant
+  color: {r: 0.019607844, g: 0.94509804, b: 0.2509804, a: 1}

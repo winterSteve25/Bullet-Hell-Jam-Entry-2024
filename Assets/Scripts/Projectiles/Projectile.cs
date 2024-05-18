@@ -7,6 +7,7 @@ namespace Projectiles
 {
     public class Projectile : MonoBehaviour
     {
+        [SerializeField]
         private SpriteRenderer _renderer;
         private float _elapsedTime;
 
@@ -20,7 +21,6 @@ namespace Projectiles
 
         private void Start()
         {
-            _renderer = GetComponent<SpriteRenderer>();
             _colliders = new Collider2D[3];
         }
 
@@ -37,6 +37,7 @@ namespace Projectiles
             if (sprite is not null)
                 _renderer.sprite = sprite;
 
+            _renderer.color = effect is null ? Color.white : effect.Color;
             _position = position;
             _effect = effect;
             _effAmount = effAmount;
