@@ -30,6 +30,7 @@ namespace Effects
         {
             _hp = GetComponent<HitPoints>();
             if (inheritElement != null) return;
+            if (effects.Count <= 0) return;
             inheritElement = effects.First().Key;
         }
 

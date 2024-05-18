@@ -20,6 +20,13 @@ namespace Procedural
         [SerializeField] private Camera cam;
         [SerializeField] private CinemachineVirtualCamera virtualCamera;
 
+        private GameObject[] props;
+
+        private void Awake()
+        {
+            props = Resources.LoadAll<GameObject>("Prefabs/Props");
+        }
+
         private FurnishedRoom Create(Vector2Int offset, int width, int height)
         {
             List<(Vector3Int, int)> doors = new List<(Vector3Int, int)>();
@@ -44,6 +51,11 @@ namespace Procedural
                         continue;
                     }
 
+                    if (i > 3 && i < width - 3 && j > 3 && j < height - 3 && Random.Range(0, 1f) < 0.001)
+                    {
+                        props.Add(pos, this.props[Random.Range(0, this.props.Length)]);
+                    }
+
                     floorTiles.Add(pos, floor);
                 }
             }
@@ -56,6 +68,11 @@ namespace Procedural
             Vector3Int[] positionArray = room.FloorTiles.Keys.ToArray();
             tilemap.SetTiles(positionArray, Enumerable.Range(0, room.FloorTiles.Keys.Count).Select(_ => (TileBase)null).ToArray());
             floorTilemap.SetTiles(positionArray, room.FloorTiles.Values.ToArray());
+            foreach (var (pos, prop) in room.Props)
+            {
+                GameObject go = Instantiate(prop);
+                go.transform.position = floorTilemap.CellToWorld(pos);
+            }
         }
 
         private bool TryBuildTunnel(List<(RectInt, bool)> rooms, RectInt room1, RectInt room2, out List<TunnelJoint> joints, out Vector3Int otherDoor)

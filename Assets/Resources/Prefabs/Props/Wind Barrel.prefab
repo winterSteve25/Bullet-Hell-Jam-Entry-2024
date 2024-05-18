@@ -11,12 +11,12 @@ GameObject:
   - component: {fileID: 6122798583117310669}
   - component: {fileID: 6894009810858421304}
   - component: {fileID: 1029307105299986653}
-  - component: {fileID: 7218036444523350710}
   - component: {fileID: 218895810113325624}
   - component: {fileID: 7267720108288192569}
+  - component: {fileID: 8019225164304880685}
   m_Layer: 3
   m_Name: Wind Barrel
-  m_TagString: Untagged
+  m_TagString: Barrel
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -133,24 +133,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 1, y: 2}
   m_EdgeRadius: 0
---- !u!114 &7218036444523350710
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6846072956381418965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 17411cecf24c4def8419bb4b5a619a16, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  effects:
-    m_keys:
-    - {fileID: 11400000, guid: 4336b40a71b1af24d8a28ba61a67ded2, type: 2}
-    m_values:
-    - 1e+10
-  inheritElement: {fileID: 11400000, guid: 4336b40a71b1af24d8a28ba61a67ded2, type: 2}
 --- !u!114 &218895810113325624
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,5 +158,26 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 1
+  hp: 0
   invincible: 0
   invincibleTime: 0
+--- !u!114 &8019225164304880685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6846072956381418965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c547d5d77be346b382c9125a58a100cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  effects:
+    m_keys:
+    - {fileID: 11400000, guid: 4336b40a71b1af24d8a28ba61a67ded2, type: 2}
+    m_values:
+    - 1e+10
+  inheritElement: {fileID: 11400000, guid: 4336b40a71b1af24d8a28ba61a67ded2, type: 2}
+  radius: 6
+  amount: 10
