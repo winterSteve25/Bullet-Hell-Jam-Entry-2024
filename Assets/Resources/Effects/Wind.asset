@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: -1036613116, guid: 69180105c89855f4e94ad8b416f68a25, type: 3}
   displayName: Wind
-  color: {r: 1, g: 1, b: 1, a: 1}
+  color: {r: 0.98267233, g: 1, b: 0.7877358, a: 1}

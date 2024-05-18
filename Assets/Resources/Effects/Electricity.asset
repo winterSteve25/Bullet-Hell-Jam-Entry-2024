@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   icon: {fileID: -1239754433, guid: 69180105c89855f4e94ad8b416f68a25, type: 3}
   displayName: Electricity
-  color: {r: 0.3254902, g: 0.22745098, b: 0.44313726, a: 1}
+  color: {r: 0.5882353, g: 0.46666667, b: 0.73333335, a: 1}

@@ -1,11 +1,12 @@
-﻿using Player;
+﻿using Effects;
+using Player;
 using Projectiles;
 using UnityEngine;
 using Utils;
 
 namespace Enemies
 {
-    public class RangedRobot : Enemy
+    public class Fire1 : Enemy
     {
         [SerializeField] private float rangeSqr;
         [SerializeField] private float projectileSpeed;
@@ -53,12 +54,12 @@ namespace Enemies
 
             ProjectileManager.Spawn(
                 currPos,
-                Positioner.Zero(),
+                Positioner.Polar(0, 1, 1),
                 Positioner.Directional(dir),
-                null,
-                0,
+                Effect.Fire,
+                10,
                 GraceIgnoreMode.Enemies,
-                amount: 1,
+                amount: 3,
                 speed: projectileSpeed
             );
         }

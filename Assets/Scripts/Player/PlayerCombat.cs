@@ -68,7 +68,7 @@ namespace Player
             }
             else
             {
-                if ( _elementAmount > 0 && _lastShot > _bulletCooldown && GameInput.LeftClickButton())
+                if (_elementAmount > 0 && _lastShot > _bulletCooldown && GameInput.LeftClickButton())
                 {
                     Vector2 position = transform.position;
                     Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
