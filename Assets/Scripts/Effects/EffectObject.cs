@@ -18,6 +18,10 @@ namespace Effects
             get => _hp.Hp;
             set => _hp.Hp = value;
         }
+        public int Shield
+        {
+            set => _hp.Shield = value;
+        }
 
         public bool Invincible => _hp.Invincible;
         public Effect InheritElement => inheritElement;
@@ -78,12 +82,12 @@ namespace Effects
             if (!forceApplyAll)
             {
                 effects.Add(eff, half);
-                EffectsChanged(eff, half);
+                EffectsChanged(this, eff, half);
                 return half;
             }
 
             effects.Add(eff, amount);
-            EffectsChanged(eff, amount);
+            EffectsChanged(this, eff, amount);
             return 0;
         }
 
@@ -102,16 +106,11 @@ namespace Effects
             }
         }
 
-        private void EffectsChanged(Effect effectAdded, float amount)
+        protected virtual void EffectsChanged(EffectObject obj, Effect effectAdded, float amount)
         {
-            // if (BothEffectsPresent(Effect.Oil, Effect.Fire, effectAdded))
-            // {
-                // StatusEffect.Add<Burning>(this);
-            // }
-
             if (BothEffectsPresent(Effect.Fire, Effect.Water, effectAdded))
             {
-                StatusEffect.Add<Steamed>(this);
+                StatusEffect.Add<Steamed>(obj);
             }
         }
 

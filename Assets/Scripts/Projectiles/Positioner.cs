@@ -17,9 +17,20 @@ namespace Projectiles
             return (currPos, _) => (currPos - origin).normalized;
         }
 
-        public static Position Polar(float startAngleInRad, float radius, float tMul)
+        public static Position Fan(Vector2 direction, float radius, float spanOverDegrees, int numberOfBullets)
         {
-            return (_, t) => new Vector2(radius * Mathf.Cos(startAngleInRad + t * tMul), radius * Mathf.Sin(startAngleInRad + t * tMul));
+            float spanOverRad = Mathf.Deg2Rad * spanOverDegrees;
+            float angle = Mathf.Atan2(direction.y, direction.x);
+            angle -= spanOverRad / 2;
+            float increments = spanOverRad / numberOfBullets;
+            return (_, t) => new Vector2(radius * Mathf.Cos(angle + t * increments), radius * Mathf.Sin(angle + t * increments));
+        }
+
+        public static Position Circle(int numberOfBullets, float radius, float initialRad = 0)
+        {
+            float spanOverRad = Mathf.PI * 2;
+            float increments = spanOverRad / numberOfBullets;
+            return (_, t) => new Vector2(radius * Mathf.Cos(initialRad + t * increments), radius * Mathf.Sin(initialRad + t * increments));
         }
 
         public static Position Identity()

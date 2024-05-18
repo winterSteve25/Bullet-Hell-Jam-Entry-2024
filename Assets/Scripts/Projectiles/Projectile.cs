@@ -62,6 +62,8 @@ namespace Projectiles
 
         private void FixedUpdate()
         {
+            if (!gameObject.activeSelf) return;
+
             for (var i = 0; i < _colliders.Length; i++)
             {
                 _colliders[i] = null;
@@ -85,12 +87,23 @@ namespace Projectiles
                     return;
                 }
 
-                if (!col.gameObject.TryGetComponent(out EffectObject obj)) continue;
-                if (obj.Invincible) continue;
+                EffectObject effectObject;
 
-                obj.Apply(_effect, _effAmount, true);
-                obj.Hp -= 1;
+                if (col.gameObject.TryGetComponent(out EffectObject obj))
+                {
+                    effectObject = obj;
+                } else if (col.gameObject.TryGetComponent(out ChildEffectObject child))
+                {
+                    effectObject = child.Parent;
+                }
+                else
+                {
+                    continue;
+                }
 
+                if (effectObject.Invincible) continue;
+                effectObject.Apply(_effect, _effAmount, true);
+                effectObject.Hp -= 1;
                 _onDestroy(this);
             }
         }

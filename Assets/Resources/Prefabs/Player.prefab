@@ -196,7 +196,7 @@ MonoBehaviour:
   horizontalDampingWhenStopping: 0.9
   horizontalDampingWhenTurning: 0.9
   speed: 0.97
-  dashMultiplier: 8
+  dashMultiplier: 0.0013
   dashCooldown: 0.5
 --- !u!114 &4296813951560237936
 MonoBehaviour:
@@ -212,10 +212,25 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
   bulletSpeed: 15
-  bulletPerSecond: 16
+  bulletPerSecond: 8
   absorptionCooldown: 8
   absorptionCooldownWhenFail: 3
   absorptionBullet: {fileID: 5126318359189883868, guid: 5975543cce43eec4f96866b5e2ac0952, type: 3}
+  amountElementApplied: 10
+  healAmount: 1
+  superNovaRadius: 6
+  superNovaDamage: 2
+  superNovaSelfDamage: 1
+  superNovaForce: 50
+  crowdControlRadius: 6
+  crowdControlDuration: 4
+  pushRadius: 6
+  pushForce: 60
+  shieldDuration: 6
+  shieldStrength: 2
+  explosionRadius: 6
+  explosionDamage: 1
+  explosionForce: 55
   _elementSelected: {fileID: 0}
   _elementAmount: 0
 --- !u!114 &3472931282770400750
@@ -230,6 +245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bb406b82de40ab8d3f99f859f4caf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 1000
+  maxHp: 1000
+  hp: 0
   invincible: 0
   invincibleTime: 0.25

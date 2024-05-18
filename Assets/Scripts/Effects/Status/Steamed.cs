@@ -12,5 +12,10 @@ namespace Effects.Status
         protected override void Act(EffectObject effectObject)
         {
         }
+
+        protected override void CleanUp(EffectObject effectObject)
+        {
+
+        }
     }
 }

@@ -23,7 +23,7 @@ namespace Player
             Rigidbody.velocity = new Vector2(hv * speed, vv * speed);
             Rigidbody.velocity.Normalize();
 
-            if (((Vector2) transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
+            if (((Vector2)transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
             {
                 _onHit(null);
                 Destroy(gameObject);
@@ -51,14 +51,21 @@ namespace Player
                 return;
             }
 
-            if (!other.TryGetComponent(out EffectObject effectObject))
+            if (other.TryGetComponent(out EffectObject effectObject))
             {
-                _onHit(null);
+                _onHit(effectObject);
                 Destroy(gameObject);
                 return;
             }
 
-            _onHit(effectObject);
+            if (other.TryGetComponent(out ChildEffectObject child))
+            {
+                _onHit(child.Parent);
+                Destroy(gameObject);
+                return;
+            }
+
+            _onHit(null);
             Destroy(gameObject);
         }
     }

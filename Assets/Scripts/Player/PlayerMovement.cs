@@ -38,7 +38,7 @@ namespace Player
 
             if (GameInput.KeyboardKeyDown(KeyCode.Space) && Rigidbody.velocity.sqrMagnitude > 1 && _elapsedTime > dashCooldown)
             {
-                Rigidbody.velocity *= dashMultiplier;
+                Rigidbody.AddForce(Rigidbody.velocity * dashMultiplier, ForceMode2D.Impulse);
                 _hp.SetInvincible();
                 _elapsedTime = 0;
             }

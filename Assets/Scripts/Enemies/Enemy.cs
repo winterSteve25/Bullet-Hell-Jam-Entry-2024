@@ -9,29 +9,35 @@ namespace Enemies
     [RequireComponent(typeof(HitPoints))]
     public class Enemy : MovementBase
     {
-        private HitPoints _hp;
+        protected HitPoints Hp;
 
         public float inaccuracy;
 
-        private void OnEnable()
+        public float Speed
         {
-            _hp = GetComponent<HitPoints>();
-            _hp.OnDeath += OnDeath;
+            get => speed;
+            set => speed = value;
         }
 
-        private void OnDisable()
+        protected virtual void OnEnable()
         {
-            _hp.OnDeath -= OnDeath;
+            Hp = GetComponent<HitPoints>();
+            Hp.OnDeath += OnDeath;
         }
 
-        private void OnDeath()
+        protected virtual void OnDisable()
+        {
+            Hp.OnDeath -= OnDeath;
+        }
+
+        protected virtual void OnDeath()
         {
             Destroy(gameObject);
         }
 
-        protected void Move(Vector2 direction)
+        public void Move(Vector2 direction, bool shouldTurn = true, float multiplier = 1)
         {
-            if (direction != Vector2.zero)
+            if (shouldTurn && direction != Vector2.zero)
             {
                 LookAt(direction);
             }
@@ -39,7 +45,7 @@ namespace Enemies
             direction.Normalize();
             float hv = CalculateVelocity(Rigidbody.velocity.x, direction.x);
             float vv = CalculateVelocity(Rigidbody.velocity.y, direction.y);
-            Rigidbody.velocity = new Vector2(hv * speed, vv * speed);
+            Rigidbody.velocity = new Vector2(hv * speed * multiplier, vv * speed * multiplier);
             Rigidbody.velocity.Normalize();
         }
 
