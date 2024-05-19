@@ -1,3 +1,4 @@
+using System;
 using Effects;
 using UnityEngine;
 using UnityEngine.Pool;
@@ -43,14 +44,15 @@ namespace Projectiles
             float effAmount,
             IgnoreMode ignoreMode,
             int amount = 5,
-            float speed = 1f
+            float speed = 1f,
+            Action<EffectObject> onHit = null
         )
         {
             for (int i = 0; i < amount; i++)
             {
                 Projectile projectile = Instance._projectiles.Get();
                 projectile.transform.position = position + offset(position, i);
-                projectile.Init(positioner, speed, effect, effAmount, o => Instance._projectiles.Release(o), ignoreMode.GetLayerMask());
+                projectile.Init(positioner, speed, effect, effAmount, o => Instance._projectiles.Release(o), ignoreMode.GetLayerMask(), onHit: onHit);
             }
         }
     }

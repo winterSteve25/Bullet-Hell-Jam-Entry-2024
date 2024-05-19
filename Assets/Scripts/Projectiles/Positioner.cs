@@ -42,5 +42,10 @@ namespace Projectiles
         {
             return (_, _) => Vector2.zero;
         }
+
+        public static Position Homing(Transform transform)
+        {
+            return (currentPos, _) => ((Vector2)transform.position - currentPos).normalized;
+        }
     }
 }

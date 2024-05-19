@@ -18,6 +18,7 @@ namespace Projectiles
         private float _effAmount;
         private Positioner.Position _position;
         private Action<Projectile> _onDestroy;
+        private Action<EffectObject> _onHit;
         private float _speed;
         private int _graceLayerMask;
         private Collider2D[] _colliders;
@@ -34,7 +35,8 @@ namespace Projectiles
             float effAmount,
             Action<Projectile> onDestroy,
             int graceLayerMask,
-            Sprite sprite = null
+            Sprite sprite = null,
+            Action<EffectObject> onHit = null
         )
         {
             s_enemyMask = IgnoreMode.Enemies.GetLayerMask();
@@ -48,6 +50,7 @@ namespace Projectiles
             _effect = effect;
             _effAmount = effAmount;
             _onDestroy = onDestroy;
+            _onHit = onHit;
             _graceLayerMask = graceLayerMask;
             _speed = speed;
             _elapsedTime = 0;
@@ -111,6 +114,7 @@ namespace Projectiles
                 if (effectObject.Invincible) continue;
                 effectObject.Apply(_effect, _effAmount, true);
                 effectObject.Hp -= 1;
+                _onHit?.Invoke(effectObject);
                 _onDestroy(this);
             }
         }
