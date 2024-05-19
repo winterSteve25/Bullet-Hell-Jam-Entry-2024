@@ -1,6 +1,7 @@
 ﻿using DG.Tweening;
 using Effects;
 using Player;
+using Procedural;
 using Projectiles;
 using UnityEngine;
 using Utils;
@@ -44,6 +45,7 @@ namespace Enemies
         {
             Droplet d = Instantiate(_dropletPrefab);
             d.Init(_effectObject.InheritElement, transform.position);
+            RoomTrigger.TriggerEnemyDiedInRoom(belongsToRoom);
             Destroy(gameObject);
         }
 
