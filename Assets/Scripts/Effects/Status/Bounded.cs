@@ -9,16 +9,16 @@ namespace Effects.Status
 
         private float _duration;
         private float _elapsed;
-        private Enemy _enemy;
+        private MovementBase _mover;
         private float _prevSpeed;
 
         public void Init(float duration)
         {
             _duration = duration;
             _elapsed = 0;
-            _enemy = EffectObject.GetComponent<Enemy>();
-            _prevSpeed = _enemy.Speed;
-            _enemy.Speed = 0;
+            _mover = EffectObject.GetComponent<MovementBase>();
+            _prevSpeed = _mover.speed;
+            _mover.speed = 0;
         }
 
         protected override bool ShouldEnd(EffectObject effectObject)
@@ -33,7 +33,7 @@ namespace Effects.Status
 
         protected override void CleanUp(EffectObject effectObject)
         {
-            _enemy.Speed = _prevSpeed;
+            _mover.speed = _prevSpeed;
         }
     }
 }

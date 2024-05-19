@@ -4,8 +4,7 @@ namespace Utils
 {
     public class MovementBase : MonoBehaviour
     {
-        [SerializeField]
-        protected float speed = 0.935f;
+        public float speed = 0.935f;
         protected Vector2 _normalizeVec;
 
         protected Rigidbody2D Rigidbody;
