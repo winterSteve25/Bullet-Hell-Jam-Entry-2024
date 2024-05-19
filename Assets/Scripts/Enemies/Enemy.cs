@@ -21,12 +21,12 @@ namespace Enemies
         }
 
         protected HitPoints Hp;
-        private EffectObject _effectObject;
+        protected EffectObject EffectObject;
         private Droplet _dropletPrefab;
 
         protected virtual void Awake()
         {
-            _effectObject = GetComponent<EffectObject>();
+            EffectObject = GetComponent<EffectObject>();
             _dropletPrefab = Resources.Load<Droplet>("Prefabs/Droplet");
         }
 
@@ -44,7 +44,7 @@ namespace Enemies
         protected virtual void OnDeath()
         {
             Droplet d = Instantiate(_dropletPrefab);
-            d.Init(_effectObject.InheritElement, transform.position);
+            d.Init(EffectObject.InheritElement, transform.position);
             RoomTrigger.TriggerEnemyDiedInRoom(belongsToRoom);
             Destroy(gameObject);
         }
@@ -56,7 +56,7 @@ namespace Enemies
                 LookAt(direction);
             }
 
-            _normalizeVec = direction.normalized;
+            _normalizeVec = direction.normalized * multiplier;
         }
 
         protected void LookAt(Vector2 direction)
@@ -98,7 +98,7 @@ namespace Enemies
         {
             Vector2 currPos = PlayerMovement.PlayerPos;
             Vector2 currVel = PlayerMovement.PlayerVel;
-            return currPos + currVel * (PlayerMovement.PlayerSpeed * Time.deltaTime * 100);
+            return currPos + currVel * (PlayerMovement.PlayerSpeed * Time.deltaTime * 5);
         }
     }
 }

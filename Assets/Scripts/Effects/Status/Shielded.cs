@@ -14,6 +14,11 @@
             EffectObject.Shield = shieldStrength;
         }
 
+        public void RefreshDuration()
+        {
+            _elapsed = 0;
+        }
+
         protected override bool ShouldEnd(EffectObject effectObject)
         {
             _elapsed += TickSpeed;

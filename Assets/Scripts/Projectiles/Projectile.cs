@@ -19,6 +19,7 @@ namespace Projectiles
         private Positioner.Position _position;
         private Action<Projectile> _onDestroy;
         private Action<EffectObject> _onHit;
+        private Action<GameObject> _onHitAnyObj;
         private float _speed;
         private int _graceLayerMask;
         private Collider2D[] _colliders;
@@ -36,7 +37,8 @@ namespace Projectiles
             Action<Projectile> onDestroy,
             int graceLayerMask,
             Sprite sprite = null,
-            Action<EffectObject> onHit = null
+            Action<EffectObject> onHit = null,
+            Action<GameObject> onHitAny = null
         )
         {
             s_enemyMask = IgnoreMode.Enemies.GetLayerMask();
@@ -51,6 +53,7 @@ namespace Projectiles
             _effAmount = effAmount;
             _onDestroy = onDestroy;
             _onHit = onHit;
+            _onHitAnyObj = onHitAny;
             _graceLayerMask = graceLayerMask;
             _speed = speed;
             _elapsedTime = 0;
@@ -96,10 +99,7 @@ namespace Projectiles
                     return;
                 }
 
-                if (col.CompareTag("AbsorptionBullet"))
-                {
-                    continue;
-                }
+                _onHitAnyObj?.Invoke(col.gameObject);
 
                 EffectObject effectObject;
 

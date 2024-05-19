@@ -17,5 +17,15 @@ namespace Utils
 
             return vector;
         }
+
+        public static Vector2 Rotate(this Vector3Int vector, float degrees)
+        {
+            float radians = degrees * Mathf.Deg2Rad;
+            float sin = Mathf.Sin(radians);
+            float cos = Mathf.Cos(radians);
+            float x = vector.x;
+            float y = vector.y;
+            return new Vector2(x * cos - y * sin, x * sin + y * cos);
+        }
     }
 }

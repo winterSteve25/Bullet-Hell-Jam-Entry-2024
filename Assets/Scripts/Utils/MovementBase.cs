@@ -4,7 +4,7 @@ namespace Utils
 {
     public class MovementBase : MonoBehaviour
     {
-        public float speed = 0.935f;
+        public float speed = 4;
         protected Vector2 _normalizeVec;
 
         protected Rigidbody2D Rigidbody;
