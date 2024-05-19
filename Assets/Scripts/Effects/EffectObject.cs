@@ -23,7 +23,12 @@ namespace Effects
             set => _hp.Shield = value;
         }
 
-        public bool Invincible => _hp.Invincible;
+        public bool Invincible
+        {
+            get => _hp.invincible;
+            set => _hp.invincible = value;
+        }
+
         public Effect InheritElement => inheritElement;
 
         private void Start()
@@ -32,12 +37,6 @@ namespace Effects
             if (inheritElement != null) return;
             if (effects.Count <= 0) return;
             inheritElement = effects.First().Key;
-        }
-
-        private void OnCollisionEnter2D(Collision2D other)
-        {
-            if (!other.gameObject.TryGetComponent(out EffectObject container)) return;
-            container.Apply(effects);
         }
 
         public bool RemoveEffect(Effect effect, float amount)

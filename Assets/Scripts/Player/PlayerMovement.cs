@@ -34,12 +34,11 @@ namespace Player
             float hv = CalculateVelocity(Rigidbody.velocity.x, GameInput.GetAxisRaw("Horizontal"));
             float vv = CalculateVelocity(Rigidbody.velocity.y, GameInput.GetAxisRaw("Vertical"));
             Rigidbody.velocity = new Vector2(hv * speed, vv * speed);
-            Rigidbody.velocity.Normalize();
 
             if (GameInput.KeyboardKeyDown(KeyCode.Space) && Rigidbody.velocity.sqrMagnitude > 1 && _elapsedTime > dashCooldown)
             {
-                Rigidbody.AddForce(Rigidbody.velocity * dashMultiplier, ForceMode2D.Impulse);
                 _hp.SetInvincible();
+                Rigidbody.AddForce(Rigidbody.velocity * dashMultiplier, ForceMode2D.Impulse);
                 _elapsedTime = 0;
             }
 

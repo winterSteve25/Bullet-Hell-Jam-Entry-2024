@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using Effects;
 using Player;
 using UnityEngine;
@@ -53,6 +54,7 @@ namespace Projectiles
             _elapsedTime += dt;
             Vector2 translation = _position(transform.position, _elapsedTime) * (dt * _speed);
             transform.Translate(translation);
+            transform.DORotate(new Vector3(0, 0, Mathf.Atan2(translation.y, translation.x)), 0.1f);
 
             if (((Vector2) transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
             {

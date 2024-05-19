@@ -1,4 +1,5 @@
 ﻿using DG.Tweening;
+using Effects;
 using Player;
 using Projectiles;
 using UnityEngine;
@@ -9,14 +10,22 @@ namespace Enemies
     [RequireComponent(typeof(HitPoints))]
     public class Enemy : MovementBase
     {
-        protected HitPoints Hp;
-
         public float inaccuracy;
 
         public float Speed
         {
             get => speed;
             set => speed = value;
+        }
+
+        protected HitPoints Hp;
+        private EffectObject _effectObject;
+        private Droplet _dropletPrefab;
+
+        protected virtual void Awake()
+        {
+            _effectObject = GetComponent<EffectObject>();
+            _dropletPrefab = Resources.Load<Droplet>("Prefabs/Droplet");
         }
 
         protected virtual void OnEnable()
@@ -32,6 +41,8 @@ namespace Enemies
 
         protected virtual void OnDeath()
         {
+            Droplet d = Instantiate(_dropletPrefab);
+            d.Init(_effectObject.InheritElement, transform.position);
             Destroy(gameObject);
         }
 
@@ -46,7 +57,6 @@ namespace Enemies
             float hv = CalculateVelocity(Rigidbody.velocity.x, direction.x);
             float vv = CalculateVelocity(Rigidbody.velocity.y, direction.y);
             Rigidbody.velocity = new Vector2(hv * speed * multiplier, vv * speed * multiplier);
-            Rigidbody.velocity.Normalize();
         }
 
         protected void LookAt(Vector2 direction)

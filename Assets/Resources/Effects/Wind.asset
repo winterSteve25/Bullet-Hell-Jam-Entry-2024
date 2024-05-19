@@ -12,6 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8120390f45b4e1da505826b9065119e, type: 3}
   m_Name: Wind
   m_EditorClassIdentifier: 
-  icon: {fileID: -1036613116, guid: 69180105c89855f4e94ad8b416f68a25, type: 3}
+  icon: {fileID: 21300000, guid: 05febc2290e2f5e4fa6028afb4d0da6a, type: 3}
   displayName: Wind
-  color: {r: 0.98267233, g: 1, b: 0.7877358, a: 1}
+  color: {r: 0.9935016, g: 1, b: 0.514151, a: 1}

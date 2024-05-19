@@ -21,13 +21,13 @@ namespace Player
             float hv = CalculateVelocity(Rigidbody.velocity.x, _direction.x);
             float vv = CalculateVelocity(Rigidbody.velocity.y, _direction.y);
             Rigidbody.velocity = new Vector2(hv * speed, vv * speed);
-            Rigidbody.velocity.Normalize();
 
-            if (((Vector2)transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000)
+            if (!(((Vector2)transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000))
             {
-                _onHit(null);
-                Destroy(gameObject);
+                return;
             }
+            _onHit(null);
+            Destroy(gameObject);
         }
 
         private void OnTriggerEnter2D(Collider2D other)

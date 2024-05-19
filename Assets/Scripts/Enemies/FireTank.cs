@@ -1,7 +1,9 @@
-﻿using Effects;
+﻿using System;
+using Effects;
 using Player;
 using Projectiles;
 using UnityEngine;
+using Utils;
 
 namespace Enemies
 {
@@ -59,6 +61,12 @@ namespace Enemies
                 amount: 4,
                 speed: projectileSpeed
             );
+        }
+
+        private void OnCollisionEnter2D(Collision2D other)
+        {
+            if (!other.collider.CompareTag("Player")) return;
+            other.collider.GetComponent<HitPoints>().Hp--;
         }
     }
 }

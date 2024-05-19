@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 8419671354037550775}
   - component: {fileID: 5356749283952425420}
-  - component: {fileID: 2113605941032327548}
   - component: {fileID: 5994543856427890643}
   - component: {fileID: 3875708776360644517}
   - component: {fileID: 6277162298454006789}
   - component: {fileID: 4296813951560237936}
   - component: {fileID: 3472931282770400750}
+  - component: {fileID: 2723982977099365799}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -90,51 +90,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &2113605941032327548
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8138450323421821153}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1.7, y: 1.7}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!50 &5994543856427890643
 Rigidbody2D:
   serializedVersion: 4
@@ -209,8 +164,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 0}
-  bulletSpeed: 15
-  bulletPerSecond: 8
+  bulletSpeed: 20
+  bulletPerSecond: 6
   absorptionCooldown: 8
   absorptionCooldownWhenFail: 3
   absorptionBullet: {fileID: 5126318359189883868, guid: 5975543cce43eec4f96866b5e2ac0952, type: 3}
@@ -229,8 +184,11 @@ MonoBehaviour:
   explosionRadius: 6
   explosionDamage: 1
   explosionForce: 55
-  _elementSelected: {fileID: 0}
-  _elementAmount: 0
+  ammoSlider: {fileID: 0}
+  effectIcon: {fileID: 0}
+  elementSelected: {fileID: 0}
+  elementAmount: 0
+  maxElementAmount: 16
 --- !u!114 &3472931282770400750
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -245,5 +203,40 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 1000
   hp: 0
-  invincible: 0
   invincibleTime: 0.25
+  invincible: 0
+--- !u!58 &2723982977099365799
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8138450323421821153}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 0
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 0.75

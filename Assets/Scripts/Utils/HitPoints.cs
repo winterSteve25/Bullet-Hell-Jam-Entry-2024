@@ -7,16 +7,17 @@ namespace Utils
     {
         [SerializeField] private int maxHp;
         [SerializeField] private int hp;
-        [SerializeField] private bool invincible;
         [SerializeField] private float invincibleTime;
+        public bool invincible;
 
         private int _shield;
+        private Collider2D _collider;
+        private Rigidbody2D _rigidbody;
 
         public event Action OnDeath;
         public event Action OnHealed;
         public event Action OnDamaged;
 
-        public bool Invincible => invincible;
         public int Hp
         {
             get => hp;
@@ -42,10 +43,12 @@ namespace Utils
                 {
                     hp = 0;
                     OnDeath?.Invoke();
-                } else if (prevHp > hp)
+                }
+                else if (prevHp > hp)
                 {
                     OnDamaged?.Invoke();
-                } else if (prevHp < hp)
+                }
+                else if (prevHp < hp)
                 {
                     OnHealed?.Invoke();
                 }
@@ -62,6 +65,8 @@ namespace Utils
         private void Awake()
         {
             hp = maxHp;
+            _collider = TryGetComponent(out Collider2D col) ? col : null;
+            _rigidbody = TryGetComponent(out Rigidbody2D rigidbody2d) ? rigidbody2d : null;
         }
 
         private void Update()
@@ -76,6 +81,9 @@ namespace Utils
             if (_elapsedTime > invincibleTime)
             {
                 invincible = false;
+                if (_collider is null) return;
+                _collider.excludeLayers = 0;
+                _rigidbody.excludeLayers = 0;
             }
         }
 
@@ -83,6 +91,12 @@ namespace Utils
         {
             invincible = true;
             _elapsedTime = 0;
+
+            if (_collider is not null)
+            {
+                _collider.excludeLayers = LayerMask.NameToLayer("Enemies");
+                _rigidbody.excludeLayers = LayerMask.NameToLayer("Enemies");
+            }
         }
     }
 }

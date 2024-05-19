@@ -1,8 +1,11 @@
+using DG.Tweening;
 using Effects;
 using Effects.Status;
 using Enemies;
 using Projectiles;
 using UnityEngine;
+using UnityEngine.Serialization;
+using UnityEngine.UI;
 using Utils;
 
 namespace Player
@@ -35,6 +38,10 @@ namespace Player
         [SerializeField] private int explosionDamage;
         [SerializeField] private float explosionForce;
 
+        [Header("UI")]
+        public Slider ammoSlider;
+        public Image effectIcon;
+
         private float _bulletCooldown;
         private float _lastShot;
         private float _lastAbsorb;
@@ -43,18 +50,51 @@ namespace Player
 
         private HitPoints _hp;
         private EffectObject _effectObject;
+        private Sprite _blankElement;
 
         [Header("Debug")]
-        [SerializeField] private Effect _elementSelected;
-        [SerializeField] private float _elementAmount;
+        [SerializeField] private Effect elementSelected;
+        [SerializeField] private float elementAmount;
+        public float maxElementAmount;
+
+        public Effect ElementSelected
+        {
+            get => elementSelected;
+            set
+            {
+                elementSelected = value;
+                if (elementSelected is null)
+                {
+                    effectIcon.sprite = _blankElement;
+                    effectIcon.color = Color.white;
+                    return;
+                }
+                effectIcon.sprite = elementSelected.Icon;
+                effectIcon.color = elementSelected.Color;
+            }
+        }
+
+        public float ElementAmount
+        {
+            get => elementAmount;
+            set
+            {
+                elementAmount = value;
+                ammoSlider.DOValue(elementAmount / maxElementAmount, 0.25f)
+                    .SetEase(Ease.InOutQuad);
+            }
+        }
 
         private void Start()
         {
+            _blankElement = Resources.Load<Sprite>("Sprites/square");
             _bulletCooldown = 1 / bulletPerSecond;
             _lastAbsorb = absorptionCooldown;
             _lastShot = _bulletCooldown;
             _hp = GetComponent<HitPoints>();
             _effectObject = GetComponent<EffectObject>();
+            ammoSlider.value = 0;
+            effectIcon.sprite = _blankElement;
         }
 
         private void Update()
@@ -84,8 +124,8 @@ namespace Player
                             return;
                         }
 
-                        _elementSelected = hit.InheritElement;
-                        _elementAmount = 100;
+                        ElementSelected = hit.InheritElement;
+                        ElementAmount = maxElementAmount;
                     }, dir.normalized);
                     _absorptionMode = false;
                     _waitingForHit = true;
@@ -93,7 +133,7 @@ namespace Player
             }
             else
             {
-                if (_elementAmount > 0 && _lastShot > _bulletCooldown && GameInput.LeftClickButton())
+                if (ElementAmount > 0 && _lastShot > _bulletCooldown && GameInput.LeftClickButton())
                 {
                     Vector2 position = transform.position;
                     Vector2 mousePos = cam.ScreenToWorldPoint(Input.mousePosition);
@@ -104,18 +144,18 @@ namespace Player
                         position,
                         Positioner.Zero(),
                         Positioner.Directional(dir),
-                        _elementSelected,
-                        _elementAmount * 1.5f + 5,
+                        ElementSelected,
+                        ElementAmount * 1.5f + 5,
                         GraceIgnoreMode.Player,
                         amount: 1,
                         speed: bulletSpeed
                     );
 
-                    _elementAmount--;
-                    if (_elementAmount <= 0)
+                    ElementAmount--;
+                    if (ElementAmount <= 0)
                     {
-                        _elementAmount = 0;
-                        _elementSelected = null;
+                        ElementAmount = 0;
+                        ElementSelected = null;
                     }
                 }
             }
@@ -125,7 +165,7 @@ namespace Player
                 return;
             }
 
-            if (_elementSelected is null)
+            if (ElementSelected is null)
             {
                 if (_lastAbsorb < absorptionCooldown)
                 {
@@ -142,12 +182,12 @@ namespace Player
 
         private void UseSkill()
         {
-            if (_elementSelected == Effect.Water)
+            if (ElementSelected == Effect.Water)
             {
                 _hp.Hp += healAmount;
                 _effectObject.Apply(Effect.Water, amountElementApplied, true);
             }
-            else if (_elementSelected == Effect.Fire)
+            else if (ElementSelected == Effect.Fire)
             {
                 _hp.Hp -= superNovaSelfDamage;
                 // ReSharper disable once Unity.PreferNonAllocApi
@@ -171,13 +211,19 @@ namespace Player
                         continue;
                     }
 
+                    bool wasInvincible = effectObject.Invincible;
+                    if (wasInvincible)
+                    {
+                        effectObject.Invincible = false;
+                    }
                     effectObject.Hp -= superNovaDamage;
+                    effectObject.Invincible = wasInvincible;
                     effectObject.Apply(Effect.Fire, amountElementApplied, true);
 
                     AddForce(effectObject.transform.position - transform.position, superNovaForce, effectObject);
                 }
             }
-            else if (_elementSelected == Effect.Plant)
+            else if (ElementSelected == Effect.Plant)
             {
                 Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, crowdControlRadius, GraceIgnoreMode.Player.GetLayerMask());
                 foreach (var target in targets)
@@ -204,7 +250,7 @@ namespace Player
                     StatusEffect.Add<Bounded>(effectObject, b => b.Init(crowdControlDuration));
                 }
             }
-            else if (_elementSelected == Effect.Wind)
+            else if (ElementSelected == Effect.Wind)
             {
                 Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, pushRadius, GraceIgnoreMode.Player.GetLayerMask());
                 foreach (var target in targets)
@@ -231,12 +277,12 @@ namespace Player
                     effectObject.Apply(Effect.Wind, amountElementApplied, true);
                 }
             }
-            else if (_elementSelected == Effect.Earth)
+            else if (ElementSelected == Effect.Earth)
             {
                 StatusEffect.Add<Shielded>(_effectObject, s => s.Init(shieldDuration, shieldStrength));
                 _effectObject.Apply(Effect.Water, amountElementApplied, true);
             }
-            else if (_elementSelected == Effect.Electricity)
+            else if (ElementSelected == Effect.Electricity)
             {
                 Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, explosionRadius, GraceIgnoreMode.Player.GetLayerMask());
                 foreach (var target in targets)
@@ -282,8 +328,8 @@ namespace Player
 
         private void ResetElement()
         {
-            _elementAmount = 0;
-            _elementSelected = null;
+            ElementAmount = 0;
+            ElementSelected = null;
         }
     }
 }
