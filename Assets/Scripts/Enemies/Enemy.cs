@@ -11,6 +11,7 @@ namespace Enemies
     public class Enemy : MovementBase
     {
         public float inaccuracy;
+        public int belongsToRoom;
 
         public float Speed
         {
@@ -69,14 +70,14 @@ namespace Enemies
         protected Vector2 GoLeftOrRight(Vector2 direction, float range)
         {
             Vector2 newDir = direction.Rotate(45);
-            RaycastHit2D ray = Physics2D.Raycast(transform.position, newDir, range, GraceIgnoreMode.Enemies.GetLayerMask());
+            RaycastHit2D ray = Physics2D.Raycast(transform.position, newDir, range, IgnoreMode.Enemies.GetLayerMask());
             if (ray.collider is null)
             {
                 return newDir;
             }
 
             newDir = direction.Rotate(-90);
-            ray = Physics2D.Raycast(transform.position, newDir, range, GraceIgnoreMode.Enemies.GetLayerMask());
+            ray = Physics2D.Raycast(transform.position, newDir, range, IgnoreMode.Enemies.GetLayerMask());
             if (ray.collider is null)
             {
                 return newDir;
@@ -87,7 +88,7 @@ namespace Enemies
 
         protected static bool HasLineOfSight(Vector2 target, Vector2 curr, float range)
         {
-            RaycastHit2D ray = Physics2D.Raycast(curr, (target - curr).normalized, range, GraceIgnoreMode.Enemies.GetLayerMask());
+            RaycastHit2D ray = Physics2D.Raycast(curr, (target - curr).normalized, range, IgnoreMode.Enemies.GetLayerMask());
             return ray.collider is not null && ray.collider.CompareTag("Player");
         }
 

@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using Cinemachine;
+using Enemies;
 using Player;
-using Projectiles;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 using UnityEngine.UI;
@@ -17,26 +17,66 @@ namespace Procedural
         [SerializeField] private TileBase floor;
         [SerializeField] private Tilemap tilemap;
         [SerializeField] private Tilemap floorTilemap;
-        [SerializeField] private List<PremadeRoom> premadeRooms;
+
         [SerializeField] private PlayerCombat playerPrefab;
         [SerializeField] private Camera cam;
         [SerializeField] private CinemachineVirtualCamera virtualCamera;
-        [SerializeField] private float barrelChance = 0.003f;
-        [SerializeField] private int maxBarrelsPerRoom = 2;
+
         [SerializeField] private Slider ammoSlider;
         [SerializeField] private Image effectIcon;
+
+        [SerializeField] private List<PremadeRoom> premadeRooms;
         [SerializeField] private RoomTrigger triggerPrefab;
 
-        private GameObject[] props;
-        private GameObject[] enemies;
+        [SerializeField] private float barrelChance = 0.003f;
+        [SerializeField] private int maxBarrelsPerRoom = 2;
+        [SerializeField] private int maxEnemiesPerRoom = 4;
+        [SerializeField] private int minEnemiesPerRoom = 2;
+
+        private GameObject[] _props;
+        private Enemy[] _enemies;
+        private RoomTrigger[] _triggers;
+        private Layout _layout;
 
         private void Awake()
         {
-            props = Resources.LoadAll<GameObject>("Prefabs/Props");
-            enemies = Resources.LoadAll<GameObject>("Prefabs/Enemies");
+            _props = Resources.LoadAll<GameObject>("Prefabs/Props");
+            _enemies = Resources.LoadAll<Enemy>("Prefabs/Enemies");
         }
 
-        private FurnishedRoom Create(Vector2Int offset, int width, int height)
+        private void Start()
+        {
+            LayoutGenerator layoutGen = FindObjectOfType<LayoutGenerator>();
+
+            // SURELY THIS IS OK FOR A GAME JAM GAME RIGHT
+            // if this game continues make L shape corridors pls
+            retry:
+            _layout = layoutGen.Generate(premadeRooms);
+            RoomTrigger.Triggered = new List<int>();
+            _triggers = new RoomTrigger[_layout.LastBuild.Count];
+
+            if (!BuildLayout(_layout))
+            {
+                tilemap.ClearAllTiles();
+                floorTilemap.ClearAllTiles();
+                for (int i = 0; i < transform.childCount; i++)
+                {
+                    Destroy(transform.GetChild(i).gameObject);
+                }
+
+                goto retry;
+            }
+
+            PlayerCombat player = Instantiate(playerPrefab);
+            Transform playerTransform = player.transform;
+            playerTransform.position = _layout.LastBuild[_layout.Spawn].Item1.center;
+            player.cam = cam;
+            player.ammoSlider = ammoSlider;
+            player.effectIcon = effectIcon;
+            virtualCamera.Follow = playerTransform;
+        }
+
+        private FurnishedRoom Create(Vector2Int offset, int width, int height, bool isSpawn)
         {
             List<(Vector3Int, int)> doors = new List<(Vector3Int, int)>();
             Dictionary<Vector3Int, TileBase> floorTiles = new Dictionary<Vector3Int, TileBase>();
@@ -61,9 +101,9 @@ namespace Procedural
                         continue;
                     }
 
-                    if (barrelCount < maxBarrelsPerRoom && i > 3 && i < width - 3 && j > 3 && j < height - 3 && Random.Range(0, 1f) < barrelChance)
+                    if (!isSpawn && barrelCount < maxBarrelsPerRoom && i > 3 && i < width - 3 && j > 3 && j < height - 3 && Random.Range(0, 1f) < barrelChance)
                     {
-                        gameObjects.Add(pos, props[Random.Range(0, props.Length)]);
+                        gameObjects.Add(pos, _props[Random.Range(0, _props.Length)]);
                         barrelCount++;
                     }
 
@@ -86,7 +126,7 @@ namespace Procedural
             }
         }
 
-        private bool TryBuildTunnel(List<(RectInt, bool)> rooms, RectInt room1, RectInt room2, out List<TunnelJoint> joints)
+        private bool TryBuildTunnel(List<(RectInt, bool)> rooms, RectInt room1, RectInt room2, out List<TunnelJoint> joints, out bool firstFirst)
         {
             int rangeXFrom = Mathf.Max(room1.xMin, room2.xMin);
             int rangeXto = Mathf.Min(room1.xMax, room2.xMax);
@@ -106,12 +146,14 @@ namespace Procedural
                     if (GoesThroughRooms(rooms, point1, point2))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
                     if (GoesThroughRooms(rooms, point1 + new Vector3Int(2, 0), point2 + new Vector3Int(2, 0)))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
@@ -119,6 +161,8 @@ namespace Procedural
                     {
                         new TunnelJoint(point1, Direction.Up), new TunnelJoint(point2, Direction.Down)
                     };
+
+                    firstFirst = true;
                 }
                 else
                 {
@@ -131,12 +175,14 @@ namespace Procedural
                     if (GoesThroughRooms(rooms, point1, point2))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
                     if (GoesThroughRooms(rooms, point1 + new Vector3Int(2, 0), point2 + new Vector3Int(2, 0)))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
@@ -144,6 +190,7 @@ namespace Procedural
                     {
                         new TunnelJoint(point1, Direction.Up), new TunnelJoint(point2, Direction.Down)
                     };
+                    firstFirst = false;
                 }
 
                 return true;
@@ -166,12 +213,14 @@ namespace Procedural
                     if (GoesThroughRooms(rooms, point1, point2))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
                     if (GoesThroughRooms(rooms, point1 + new Vector3Int(0, 2), point2 + new Vector3Int(0, 2)))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
@@ -179,6 +228,8 @@ namespace Procedural
                     {
                         new TunnelJoint(point1, Direction.Right), new TunnelJoint(point2, Direction.Left)
                     };
+
+                    firstFirst = false;
                 }
                 else
                 {
@@ -191,12 +242,14 @@ namespace Procedural
                     if (GoesThroughRooms(rooms, point1, point2))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
                     if (GoesThroughRooms(rooms, point1 + new Vector3Int(0, 2), point2 + new Vector3Int(0, 2)))
                     {
                         joints = null;
+                        firstFirst = false;
                         return false;
                     }
 
@@ -204,12 +257,14 @@ namespace Procedural
                     {
                         new TunnelJoint(point1, Direction.Right), new TunnelJoint(point2, Direction.Left)
                     };
+                    firstFirst = true;
                 }
 
                 return true;
             }
 
             joints = null;
+            firstFirst = false;
             return false;
         }
 
@@ -256,7 +311,7 @@ namespace Procedural
             tilemap.SetTilesBlock(wholeBounds, Enumerable.Range(0, wholeBounds.size.x * wholeBounds.size.y).Select(_ => wall).ToArray());
 
             List<(RectInt, bool)> lastBuild = builtLayout.LastBuild;
-            Dictionary<int, List<(List<TunnelJoint>, int)>> tunnels = new Dictionary<int, List<(List<TunnelJoint>, int)>>();
+            Dictionary<int, List<(List<TunnelJoint>, int, bool)>> tunnels = new Dictionary<int, List<(List<TunnelJoint>, int, bool)>>();
             Dictionary<int, List<int>> tunnelRecord = new Dictionary<int, List<int>>();
             Dictionary<int, List<int>> tunnelRecordBackward = new Dictionary<int, List<int>>();
 
@@ -280,14 +335,14 @@ namespace Procedural
                     }
                 }
 
-                if (!TryBuildTunnel(lastBuild, lastBuild[connection.Item1].Item1, lastBuild[connection.Item2].Item1, out var joints))
+                if (!TryBuildTunnel(lastBuild, lastBuild[connection.Item1].Item1, lastBuild[connection.Item2].Item1, out var joints, out var firstFirst))
                 {
                     continue;
                 }
 
                 if (!tunnels.ContainsKey(connection.Item1))
                 {
-                    tunnels.Add(connection.Item1, new List<(List<TunnelJoint>, int)>());
+                    tunnels.Add(connection.Item1, new List<(List<TunnelJoint>, int, bool)>());
                 }
 
                 if (!tunnelRecord.ContainsKey(connection.Item1))
@@ -300,7 +355,7 @@ namespace Procedural
                     tunnelRecordBackward.Add(connection.Item2, new List<int>());
                 }
 
-                tunnels[connection.Item1].Add((joints, connection.Item2));
+                tunnels[connection.Item1].Add((joints, connection.Item2, firstFirst));
                 tunnelRecord[connection.Item1].Add(connection.Item2);
                 tunnelRecordBackward[connection.Item2].Add(connection.Item1);
             }
@@ -311,7 +366,7 @@ namespace Procedural
 
                 if (!premade)
                 {
-                    Place(Create(r.position, r.width, r.height));
+                    Place(Create(r.position, r.width, r.height, i == builtLayout.Spawn));
                 }
 
                 if (!tunnels.ContainsKey(i))
@@ -323,9 +378,16 @@ namespace Procedural
                     continue;
                 }
 
-                foreach ((List<TunnelJoint> tunnelsJ, int endRoom) in tunnels[i])
+                foreach ((List<TunnelJoint> tunnelsJ, int endRoom, bool firstRoomFirst) in tunnels[i])
                 {
-                    PlaceTunnel(i, endRoom, tunnelsJ);
+                    if (firstRoomFirst)
+                    {
+                        PlaceTunnel(i, endRoom, tunnelsJ);
+                    }
+                    else
+                    {
+                        PlaceTunnel(endRoom, i, tunnelsJ);
+                    }
                 }
             }
 
@@ -349,7 +411,8 @@ namespace Procedural
                 TunnelJoint next = joints[i + 1];
                 Vector3Int size = new Vector3Int();
                 Vector3Int tunnelStartPos = first.position;
-                Vector3Int constAxis = Vector3Int.one;
+                Vector3Int constAxis;
+
                 switch (first.direction)
                 {
                     case Direction.Up:
@@ -358,20 +421,6 @@ namespace Procedural
                         tunnelStartPos.x += 1;
                         tunnelStartPos.y -= 2;
                         constAxis = new Vector3Int(0, 1, 0);
-                        break;
-                    case Direction.Down:
-                        size.x = 2;
-                        size.y = Mathf.Abs(next.position.y - first.position.y) + 4;
-                        tunnelStartPos.x += 1;
-                        tunnelStartPos.y += 2;
-                        constAxis = new Vector3Int(0, 1, 0);
-                        break;
-                    case Direction.Left:
-                        size.x = Mathf.Abs(next.position.x - first.position.x) + 4;
-                        size.y = 2;
-                        tunnelStartPos.y += 1;
-                        tunnelStartPos.x += 2;
-                        constAxis = new Vector3Int(1, 0, 0);
                         break;
                     case Direction.Right:
                         size.x = Mathf.Abs(next.position.x - first.position.x) + 4;
@@ -384,14 +433,33 @@ namespace Procedural
                         throw new ArgumentOutOfRangeException();
                 }
 
-                Vector3Int swapedConstAxis = new (constAxis.y, constAxis.x, 0);
+                Vector3Int swapedConstAxis = new(constAxis.y, constAxis.x, 0);
 
-                RoomTrigger trigger = Instantiate(triggerPrefab);
-                trigger.transform.position = floorTilemap.CellToWorld(tunnelStartPos + swapedConstAxis);
-                trigger.Init(floorTilemap, _layout.LastBuild, enemies, startRoom, swapedConstAxis, new Vector3Int(size.x, size.y));
-                RoomTrigger trigger2 = Instantiate(triggerPrefab);
-                trigger2.transform.position = floorTilemap.CellToWorld(tunnelStartPos + swapedConstAxis) + size * constAxis;
-                trigger2.Init(floorTilemap, _layout.LastBuild, enemies, endRoom, swapedConstAxis, new Vector3Int(size.x, size.y));
+                if (startRoom != _layout.Spawn)
+                {
+                    if (_triggers[startRoom] is null)
+                    {
+                        RoomTrigger trigger = Instantiate(triggerPrefab, transform);
+                        trigger.Init(tilemap, _layout.LastBuild, _enemies, startRoom, swapedConstAxis, new Vector3Int(size.x, size.y), tunnelStartPos, wall, maxEnemiesPerRoom, minEnemiesPerRoom);
+                        _triggers[startRoom] = trigger;
+                    } else
+                    {
+                        _triggers[startRoom].AddFill(tunnelStartPos, new Vector3Int(size.x, size.y), swapedConstAxis);
+                    }
+                }
+
+                if (endRoom != _layout.Spawn)
+                {
+                    if (_triggers[endRoom] is null)
+                    {
+                        RoomTrigger trigger = Instantiate(triggerPrefab, transform);
+                        trigger.Init(tilemap, _layout.LastBuild, _enemies, endRoom, swapedConstAxis, new Vector3Int(size.x, size.y), tunnelStartPos + size * constAxis - constAxis, wall, maxEnemiesPerRoom, minEnemiesPerRoom);
+                        _triggers[endRoom] = trigger;
+                    } else
+                    {
+                        _triggers[endRoom].AddFill(tunnelStartPos + size * constAxis - constAxis, new Vector3Int(size.x, size.y), swapedConstAxis);
+                    }
+                }
 
                 size.z = 1;
                 BoundsInt bounds = new BoundsInt(tunnelStartPos, size);
@@ -401,39 +469,6 @@ namespace Procedural
                 floorTilemap.SetTilesBlock(bounds, tiles);
                 tilemap.SetTilesBlock(bounds, air);
             }
-        }
-
-        private Layout _layout;
-
-        private void Start()
-        {
-            LayoutGenerator layoutGen = FindObjectOfType<LayoutGenerator>();
-
-            // SURELY THIS IS OK FOR A GAME JAM GAME RIGHT
-            // if this game continues make L shape corridors pls
-            retry:
-            _layout = layoutGen.Generate(premadeRooms);
-            RoomTrigger.Triggered = new List<int>();
-
-            if (!BuildLayout(_layout))
-            {
-                tilemap.ClearAllTiles();
-                floorTilemap.ClearAllTiles();
-                for (int i = 0; i < transform.childCount; i++)
-                {
-                    Destroy(transform.GetChild(i).gameObject);
-                }
-
-                goto retry;
-            }
-
-            PlayerCombat player = Instantiate(playerPrefab);
-            Transform playerTransform = player.transform;
-            playerTransform.position = _layout.LastBuild[_layout.Spawn].Item1.center;
-            player.cam = cam;
-            player.ammoSlider = ammoSlider;
-            player.effectIcon = effectIcon;
-            virtualCamera.Follow = playerTransform;
         }
     }
 }

@@ -443,7 +443,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 256
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -502,7 +502,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f8facb86989e402d8eb1a84c1c92ca9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 0.985
+  speed: 4
 --- !u!1 &8999098395447296546
 GameObject:
   m_ObjectHideFlags: 0

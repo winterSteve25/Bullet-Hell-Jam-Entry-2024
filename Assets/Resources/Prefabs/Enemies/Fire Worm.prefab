@@ -178,6 +178,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 0
   inaccuracy: 0
+  belongsToRoom: 0
   projectileSpeed: 15
   shootCooldown: 2
   tail: {fileID: 467086597523694918}
@@ -275,7 +276,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 384
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -396,7 +397,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 448
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -564,7 +565,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 448
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2
@@ -698,7 +699,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 192
+    m_Bits: 448
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

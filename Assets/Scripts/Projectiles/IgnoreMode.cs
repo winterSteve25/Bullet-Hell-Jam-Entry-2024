@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Projectiles
 {
-    public enum GraceIgnoreMode
+    public enum IgnoreMode
     {
         Player,
         Enemies,
@@ -11,12 +11,12 @@ namespace Projectiles
 
     public static class GraceIgnoreModeExt
     {
-        public static int GetLayerMask(this GraceIgnoreMode ignoreMode)
+        public static int GetLayerMask(this IgnoreMode ignoreMode)
         {
             return ignoreMode switch
             {
-                GraceIgnoreMode.Player => LayerMask.GetMask("Default", "Environment", "Enemies"),
-                GraceIgnoreMode.Enemies => LayerMask.GetMask("Default", "Environment", "Player"),
+                IgnoreMode.Player => LayerMask.GetMask("Default", "Environment", "Enemies"),
+                IgnoreMode.Enemies => LayerMask.GetMask("Default", "Environment", "Player"),
                 _ => throw new ArgumentOutOfRangeException(nameof(ignoreMode), ignoreMode, null)
             };
         }

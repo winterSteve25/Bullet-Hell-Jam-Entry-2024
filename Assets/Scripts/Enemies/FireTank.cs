@@ -57,7 +57,7 @@ namespace Enemies
                 Positioner.Outward(currPos),
                 Effect.Fire,
                 10,
-                GraceIgnoreMode.Enemies,
+                IgnoreMode.Enemies,
                 amount: 4,
                 speed: projectileSpeed
             );

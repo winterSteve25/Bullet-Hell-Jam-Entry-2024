@@ -65,12 +65,12 @@ namespace Player
                 elementSelected = value;
                 if (elementSelected is null)
                 {
-                    //effectIcon.sprite = _blankElement;
+                    effectIcon.sprite = _blankElement;
                     effectIcon.color = Color.white;
                     return;
                 }
-                //effectIcon.sprite = elementSelected.Icon;
-                //effectIcon.color = elementSelected.Color;
+                effectIcon.sprite = elementSelected.Icon;
+                effectIcon.color = elementSelected.Color;
             }
         }
 
@@ -94,7 +94,7 @@ namespace Player
             _hp = GetComponent<HitPoints>();
             _effectObject = GetComponent<EffectObject>();
             ammoSlider.value = 0;
-            //effectIcon.sprite = _blankElement;
+            effectIcon.sprite = _blankElement;
         }
 
         private void Update()
@@ -123,11 +123,8 @@ namespace Player
                             _lastAbsorb = absorptionCooldown - absorptionCooldownWhenFail;
                             return;
                         }
-                        Debug.Log("lmaoed "+ElementAmount);
                         ElementSelected = hit.InheritElement;
-                        Debug.Log("test"+maxElementAmount);
                         ElementAmount = maxElementAmount;
-                        Debug.Log("test2"+ElementAmount);
                     }, dir.normalized);
                     _absorptionMode = false;
                     _waitingForHit = true;
@@ -148,7 +145,7 @@ namespace Player
                         Positioner.Directional(dir),
                         ElementSelected,
                         ElementAmount * 1.5f + 5,
-                        GraceIgnoreMode.Player,
+                        IgnoreMode.Player,
                         amount: 1,
                         speed: bulletSpeed
                     );
@@ -193,7 +190,7 @@ namespace Player
             {
                 _hp.Hp -= superNovaSelfDamage;
                 // ReSharper disable once Unity.PreferNonAllocApi
-                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, superNovaRadius, GraceIgnoreMode.Player.GetLayerMask());
+                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, superNovaRadius, IgnoreMode.Player.GetLayerMask());
                 foreach (var target in targets)
                 {
                     if (target is null) continue;
@@ -227,7 +224,7 @@ namespace Player
             }
             else if (ElementSelected == Effect.Plant)
             {
-                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, crowdControlRadius, GraceIgnoreMode.Player.GetLayerMask());
+                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, crowdControlRadius, IgnoreMode.Player.GetLayerMask());
                 foreach (var target in targets)
                 {
                     if (target is null) continue;
@@ -254,7 +251,7 @@ namespace Player
             }
             else if (ElementSelected == Effect.Wind)
             {
-                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, pushRadius, GraceIgnoreMode.Player.GetLayerMask());
+                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, pushRadius, IgnoreMode.Player.GetLayerMask());
                 foreach (var target in targets)
                 {
                     if (target is null) continue;
@@ -286,7 +283,7 @@ namespace Player
             }
             else if (ElementSelected == Effect.Electricity)
             {
-                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, explosionRadius, GraceIgnoreMode.Player.GetLayerMask());
+                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, explosionRadius, IgnoreMode.Player.GetLayerMask());
                 foreach (var target in targets)
                 {
                     if (target is null) continue;

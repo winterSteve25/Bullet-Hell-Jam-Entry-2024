@@ -85,6 +85,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   speed: 1
   inaccuracy: 0
+  belongsToRoom: 0
   rangeSqr: 200
   projectileSpeed: 10
 --- !u!50 &2002285974086795139
@@ -129,7 +130,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 384
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

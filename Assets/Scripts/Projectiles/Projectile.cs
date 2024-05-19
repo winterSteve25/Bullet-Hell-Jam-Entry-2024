@@ -8,6 +8,8 @@ namespace Projectiles
 {
     public class Projectile : MonoBehaviour
     {
+        private static int s_enemyMask;
+
         [SerializeField]
         private SpriteRenderer _renderer;
         private float _elapsedTime;
@@ -35,10 +37,13 @@ namespace Projectiles
             Sprite sprite = null
         )
         {
+            s_enemyMask = IgnoreMode.Enemies.GetLayerMask();
+
             if (sprite is not null)
                 _renderer.sprite = sprite;
 
-            _renderer.color = effect is null ? Color.white : effect.Color;
+            // ReSharper disable once Unity.NoNullPropagation
+            _renderer.color = effect?.Color ?? Color.white;
             _position = position;
             _effect = effect;
             _effAmount = effAmount;
@@ -71,7 +76,7 @@ namespace Projectiles
                 _colliders[i] = null;
             }
 
-            if (_elapsedTime < 0.5)
+            if (_graceLayerMask == s_enemyMask || _elapsedTime < 0.5)
             {
                 Physics2D.OverlapCircleNonAlloc(transform.position, 0.25f, _colliders, _graceLayerMask);
             }

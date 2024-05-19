@@ -41,7 +41,7 @@ namespace Projectiles
             Positioner.Position positioner,
             Effect effect,
             float effAmount,
-            GraceIgnoreMode ignoreMode,
+            IgnoreMode ignoreMode,
             int amount = 5,
             float speed = 1f
         )

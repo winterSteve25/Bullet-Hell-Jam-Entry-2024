@@ -1,11 +1,9 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace Utils
 {
     public class MovementBase : MonoBehaviour
     {
-
         [SerializeField]
         protected float speed = 0.935f;
         protected Vector2 _normalizeVec;
@@ -19,7 +17,7 @@ namespace Utils
 
         private void FixedUpdate()
         {
-            Rigidbody.velocity = _normalizeVec * speed * Time.fixedDeltaTime * 100;
+            Rigidbody.velocity = _normalizeVec * (speed * Time.fixedDeltaTime * 100);
         }
     }
 }

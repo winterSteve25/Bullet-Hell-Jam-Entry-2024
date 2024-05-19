@@ -79,7 +79,7 @@ namespace Enemies
                     Positioner.Directional(dir),
                     Effect.Fire,
                     10,
-                    GraceIgnoreMode.Enemies,
+                    IgnoreMode.Enemies,
                     amount: 1,
                     speed: projectileSpeed
                 );
@@ -108,7 +108,7 @@ namespace Enemies
                 Positioner.Outward(currPos),
                 Effect.Fire,
                 10,
-                GraceIgnoreMode.Enemies,
+                IgnoreMode.Enemies,
                 amount: 8,
                 speed: projectileSpeed
             );

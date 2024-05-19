@@ -62,7 +62,7 @@ namespace Enemies
                 Positioner.Directional(dir),
                 null,
                 0,
-                GraceIgnoreMode.Enemies,
+                IgnoreMode.Enemies,
                 amount: 1,
                 speed: projectileSpeed
             );
