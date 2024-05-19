@@ -6,7 +6,6 @@ using Enemies;
 using Player;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-using UnityEngine.UI;
 using Random = UnityEngine.Random;
 
 namespace Procedural
@@ -18,15 +17,9 @@ namespace Procedural
         [SerializeField] private Tilemap tilemap;
         [SerializeField] private Tilemap floorTilemap;
 
-        [SerializeField] private PlayerCombat playerPrefab;
-        [SerializeField] private Camera cam;
-        [SerializeField] private CinemachineVirtualCamera virtualCamera;
-
-        [SerializeField] private Slider ammoSlider;
-        [SerializeField] private Image effectIcon;
-
         [SerializeField] private List<PremadeRoom> premadeRooms;
         [SerializeField] private RoomTrigger triggerPrefab;
+        [SerializeField] private PlayerCombat player;
 
         [SerializeField] private float barrelChance = 0.003f;
         [SerializeField] private int maxBarrelsPerRoom = 2;
@@ -67,13 +60,8 @@ namespace Procedural
                 goto retry;
             }
 
-            PlayerCombat player = Instantiate(playerPrefab);
             Transform playerTransform = player.transform;
             playerTransform.position = _layout.LastBuild[_layout.Spawn].Item1.center;
-            player.cam = cam;
-            player.ammoSlider = ammoSlider;
-            player.effectIcon = effectIcon;
-            virtualCamera.Follow = playerTransform;
         }
 
         private FurnishedRoom Create(Vector2Int offset, int width, int height, bool isSpawn)

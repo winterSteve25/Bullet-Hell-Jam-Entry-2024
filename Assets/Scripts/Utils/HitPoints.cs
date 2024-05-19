@@ -60,6 +60,8 @@ namespace Utils
             set => _shield = value;
         }
 
+        public int MaxHp => maxHp;
+
         private float _elapsedTime;
 
         private void Awake()

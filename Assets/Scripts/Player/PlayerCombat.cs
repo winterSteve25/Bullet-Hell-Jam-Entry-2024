@@ -1,10 +1,8 @@
 using DG.Tweening;
 using Effects;
 using Effects.Status;
-using Enemies;
 using Projectiles;
 using UnityEngine;
-using UnityEngine.Serialization;
 using UnityEngine.UI;
 using Utils;
 
@@ -48,7 +46,7 @@ namespace Player
         private bool _absorptionMode;
         private bool _waitingForHit;
 
-        private HitPoints _hp;
+        private static HitPoints _hp;
         private EffectObject _effectObject;
         private Sprite _blankElement;
 
@@ -56,6 +54,8 @@ namespace Player
         [SerializeField] private Effect elementSelected;
         [SerializeField] private float elementAmount;
         public float maxElementAmount;
+
+        public static HitPoints Hp => _hp;
 
         public Effect ElementSelected
         {

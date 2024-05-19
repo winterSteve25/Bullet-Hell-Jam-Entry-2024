@@ -16,6 +16,7 @@ GameObject:
   - component: {fileID: 4296813951560237936}
   - component: {fileID: 3472931282770400750}
   - component: {fileID: 2723982977099365799}
+  - component: {fileID: 3805858481688913509}
   m_Layer: 6
   m_Name: Player
   m_TagString: Player
@@ -198,7 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bb406b82de40ab8d3f99f859f4caf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 1000
+  maxHp: 10
   hp: 0
   invincibleTime: 0.25
   invincible: 0
@@ -237,3 +238,16 @@ CircleCollider2D:
   m_Offset: {x: 0, y: 0}
   serializedVersion: 2
   m_Radius: 0.75
+--- !u!114 &3805858481688913509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8138450323421821153}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7f8cc74039b34dfba2faac2add905ffe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slider: {fileID: 0}
