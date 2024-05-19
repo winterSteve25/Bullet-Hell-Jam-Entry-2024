@@ -72,8 +72,6 @@ namespace Projectiles
 
         private void FixedUpdate()
         {
-            if (!gameObject.activeSelf) return;
-
             for (var i = 0; i < _colliders.Length; i++)
             {
                 _colliders[i] = null;
@@ -90,11 +88,17 @@ namespace Projectiles
 
             foreach (var col in _colliders)
             {
+                if (!gameObject.activeSelf) return;
                 if (col == null) continue;
                 if (col.CompareTag("Walls"))
                 {
                     _onDestroy(this);
                     return;
+                }
+
+                if (col.CompareTag("AbsorptionBullet"))
+                {
+                    continue;
                 }
 
                 EffectObject effectObject;
