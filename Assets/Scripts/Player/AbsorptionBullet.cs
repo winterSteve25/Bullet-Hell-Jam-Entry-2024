@@ -18,9 +18,7 @@ namespace Player
 
         private void Update()
         {
-            float hv = CalculateVelocity(Rigidbody.velocity.x, _direction.x);
-            float vv = CalculateVelocity(Rigidbody.velocity.y, _direction.y);
-            Rigidbody.velocity = new Vector2(hv * speed, vv * speed);
+            _normalizeVec = _direction*speed;
 
             if (!(((Vector2)transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000))
             {
@@ -53,6 +51,7 @@ namespace Player
 
             if (other.TryGetComponent(out EffectObject effectObject))
             {
+                Destroy(gameObject);
                 _onHit(effectObject);
                 Destroy(gameObject);
                 return;

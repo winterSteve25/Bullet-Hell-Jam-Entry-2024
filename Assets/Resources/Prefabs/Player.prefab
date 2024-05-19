@@ -145,10 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4b38f7274e5245f58830f8ea4e51a695, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalDamping: 0.9
-  horizontalDampingWhenStopping: 0.9
-  horizontalDampingWhenTurning: 0.9
-  speed: 0.97
+  speed: 4
   dashMultiplier: 0.0013
   dashCooldown: 0.5
 --- !u!114 &4296813951560237936

@@ -65,12 +65,12 @@ namespace Player
                 elementSelected = value;
                 if (elementSelected is null)
                 {
-                    effectIcon.sprite = _blankElement;
+                    //effectIcon.sprite = _blankElement;
                     effectIcon.color = Color.white;
                     return;
                 }
-                effectIcon.sprite = elementSelected.Icon;
-                effectIcon.color = elementSelected.Color;
+                //effectIcon.sprite = elementSelected.Icon;
+                //effectIcon.color = elementSelected.Color;
             }
         }
 
@@ -94,7 +94,7 @@ namespace Player
             _hp = GetComponent<HitPoints>();
             _effectObject = GetComponent<EffectObject>();
             ammoSlider.value = 0;
-            effectIcon.sprite = _blankElement;
+            //effectIcon.sprite = _blankElement;
         }
 
         private void Update()
@@ -123,9 +123,11 @@ namespace Player
                             _lastAbsorb = absorptionCooldown - absorptionCooldownWhenFail;
                             return;
                         }
-
+                        Debug.Log("lmaoed "+ElementAmount);
                         ElementSelected = hit.InheritElement;
+                        Debug.Log("test"+maxElementAmount);
                         ElementAmount = maxElementAmount;
+                        Debug.Log("test2"+ElementAmount);
                     }, dir.normalized);
                     _absorptionMode = false;
                     _waitingForHit = true;

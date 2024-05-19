@@ -144,8 +144,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 10
   hp: 0
-  invincible: 0
   invincibleTime: 0
+  invincible: 0
 --- !u!114 &1962133883657946325
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -176,10 +176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04c6cfe0d75645a7bcc8bbc5b38e42f2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  horizontalDamping: 0.9
-  horizontalDampingWhenStopping: 0.9
-  horizontalDampingWhenTurning: 0.9
-  speed: 0.935
+  speed: 0
   inaccuracy: 0
   projectileSpeed: 15
   shootCooldown: 2

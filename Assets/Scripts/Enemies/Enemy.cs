@@ -53,10 +53,7 @@ namespace Enemies
                 LookAt(direction);
             }
 
-            direction.Normalize();
-            float hv = CalculateVelocity(Rigidbody.velocity.x, direction.x);
-            float vv = CalculateVelocity(Rigidbody.velocity.y, direction.y);
-            Rigidbody.velocity = new Vector2(hv * speed * multiplier, vv * speed * multiplier);
+            _normalizeVec = direction.normalized;
         }
 
         protected void LookAt(Vector2 direction)

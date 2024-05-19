@@ -19,7 +19,6 @@ namespace Player
 
         [SerializeField] private float dashMultiplier = 6f;
         [SerializeField] private float dashCooldown = 1.5f;
-
         protected override void Start()
         {
             base.Start();
@@ -30,15 +29,13 @@ namespace Player
         private void Update()
         {
             _elapsedTime += Time.deltaTime;
-
-            float hv = CalculateVelocity(Rigidbody.velocity.x, GameInput.GetAxisRaw("Horizontal"));
-            float vv = CalculateVelocity(Rigidbody.velocity.y, GameInput.GetAxisRaw("Vertical"));
-            Rigidbody.velocity = new Vector2(hv * speed, vv * speed);
+            _normalizeVec = new Vector2(GameInput.GetAxisRaw("Horizontal"), GameInput.GetAxisRaw("Vertical")).normalized;
 
             if (GameInput.KeyboardKeyDown(KeyCode.Space) && Rigidbody.velocity.sqrMagnitude > 1 && _elapsedTime > dashCooldown)
             {
                 _hp.SetInvincible();
-                Rigidbody.AddForce(Rigidbody.velocity * dashMultiplier, ForceMode2D.Impulse);
+                Rigidbody.AddForce(new Vector2(GameInput.GetAxis("Horizontal"),GameInput.GetAxis("Vertical")).normalized
+                * dashMultiplier);
                 _elapsedTime = 0;
             }
 
