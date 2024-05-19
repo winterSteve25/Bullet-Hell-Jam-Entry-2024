@@ -53,7 +53,6 @@ namespace Player
             {
                 Destroy(gameObject);
                 _onHit(effectObject);
-                Destroy(gameObject);
                 return;
             }
 
