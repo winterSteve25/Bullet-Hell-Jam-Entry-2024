@@ -146,7 +146,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   speed: 4
-  dashMultiplier: 0.0013
+  dashMultiplier: 1.5
   dashCooldown: 0.5
 --- !u!114 &4296813951560237936
 MonoBehaviour:
