@@ -145,6 +145,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 601a7135ef7941bfad7ad5b056e4b7d7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ExplodePar: {fileID: 380228805772503007, guid: dc94e966be3bea74488a02861481786b, type: 3}
 --- !u!114 &4846755469968052971
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -159,8 +160,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   maxHp: 1
   hp: 0
-  invincible: 0
   invincibleTime: 0
+  invincible: 0
 --- !u!114 &8468180756795762999
 MonoBehaviour:
   m_ObjectHideFlags: 0
