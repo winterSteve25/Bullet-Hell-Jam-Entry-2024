@@ -5,10 +5,10 @@ namespace Utils
 {
     public class CombatUtils
     {
-
         public static void AddForce(Vector2 dir, float multiplier, EffectObject obj)
         {
-            if (!obj.TryGetComponent(out Rigidbody2D rb)) return;
+            if (!obj.TryGetComponent(out Rigidbody2D rb))
+                return;
 
             if (rb.velocity != Vector2.zero)
             {
@@ -19,13 +19,24 @@ namespace Utils
             }
         }
 
-        public static void Explode(Vector2 origin, float radius, float force, int damage, Effect applied, float amountElementApplied, int layerMask)
+        public static void Explode(
+            Vector2 origin,
+            float radius,
+            float force,
+            int damage,
+            Effect applied,
+            float amountElementApplied,
+            int layerMask
+        )
         {
+            SoundsManager.PlaySound("explode");
+
             ParticlesUtils.Explode(origin, radius);
             Collider2D[] targets = Physics2D.OverlapCircleAll(origin, radius, layerMask);
             foreach (var target in targets)
             {
-                if (target is null) continue;
+                if (target is null)
+                    continue;
                 EffectObject effectObject;
 
                 if (target.TryGetComponent(out EffectObject obj))
@@ -44,7 +55,7 @@ namespace Utils
                 effectObject.Hp -= damage;
                 effectObject.Apply(applied, amountElementApplied, true);
 
-                AddForce((Vector2) effectObject.transform.position - origin, force, effectObject);
+                AddForce((Vector2)effectObject.transform.position - origin, force, effectObject);
             }
         }
     }

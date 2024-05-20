@@ -20,6 +20,7 @@ namespace Effects
             if (!other.CompareTag("Player")) return;
             PlayerCombat playerCombat = other.GetComponent<PlayerCombat>();
             if (playerCombat.ElementSelected is not null) return;
+            SoundsManager.PlaySound("pickup");
             playerCombat.ElementSelected = _effect;
             playerCombat.ElementAmount = playerCombat.maxElementAmount;
             Destroy(gameObject);

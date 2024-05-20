@@ -18,8 +18,8 @@ namespace Player
 
         private void Update()
         {
-            _normalizeVec = _direction*speed;
-
+            _normalizeVec = _direction*(speed/1.5f);
+            //GetComponent<Rigidbody2D>().rotation = Mathf.Atan2(_direction.x, _direction.y) * Mathf.Rad2Deg - 90f;
             if (!(((Vector2)transform.position - PlayerMovement.PlayerPos).sqrMagnitude > 2000))
             {
                 return;

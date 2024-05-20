@@ -58,6 +58,7 @@ namespace Enemies
             _elapsedTime = 0;
             _charging = true;
             Transform transform1 = transform;
+            SoundsManager.PlaySound("lazer_charging");
 
             chargeParticles.Play();
 
@@ -125,6 +126,7 @@ namespace Enemies
             DOTween.To(() => telegraph.widthMultiplier, f => telegraph.widthMultiplier = f, 0.1f, chargeTime * 0.01f)
                 .SetEase(Ease.InCubic);
 
+            SoundsManager.PlaySound("lazer_shoot");
             Vector2 position = transform1.position;
             Vector2 right = transform1.right;
             telegraph.SetPosition(0, position + right);
