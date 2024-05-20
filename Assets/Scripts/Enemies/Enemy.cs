@@ -59,14 +59,9 @@ namespace Enemies
             _normalizeVec = direction.normalized * multiplier;
         }
 
-        protected void LookAt(Vector2 direction)
+        protected void LookAt(Vector2 dir)
         {
-            float angle = Mathf.Atan2(direction.y, direction.x) * Mathf.Rad2Deg;
-            if (Mathf.Abs(transform.rotation.eulerAngles.z - angle) < 45)
-            {
-                return;
-            }
-            transform.DORotateQuaternion(Quaternion.Euler(0, 0, angle), 0.2f);
+            transform.eulerAngles = new Vector3(0, 0, Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg);
         }
 
         protected Vector2 GoLeftOrRight(Vector2 direction, float range)

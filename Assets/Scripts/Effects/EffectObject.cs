@@ -12,28 +12,28 @@ namespace Effects
         [SerializeField] private EffectStackDic effects;
         [SerializeField] private Effect inheritElement;
 
-        private HitPoints _hp;
+        protected HitPoints HitPoints;
         public int Hp
         {
-            get => _hp.Hp;
-            set => _hp.Hp = value;
+            get => HitPoints.Hp;
+            set => HitPoints.Hp = value;
         }
         public int Shield
         {
-            set => _hp.Shield = value;
+            set => HitPoints.Shield = value;
         }
 
         public bool Invincible
         {
-            get => _hp.invincible;
-            set => _hp.invincible = value;
+            get => HitPoints.invincible;
+            set => HitPoints.invincible = value;
         }
 
         public Effect InheritElement => inheritElement;
 
-        private void Start()
+        protected virtual void Start()
         {
-            _hp = GetComponent<HitPoints>();
+            HitPoints = GetComponent<HitPoints>();
             if (inheritElement != null) return;
             if (effects.Count <= 0) return;
             inheritElement = effects.First().Key;
@@ -65,7 +65,7 @@ namespace Effects
                 return 0;
             }
 
-            var half = amount * 0.5f;
+            float half = amount * 0.5f;
 
             if (effects.ContainsKey(eff))
             {
@@ -91,26 +91,61 @@ namespace Effects
             return 0;
         }
 
-        private void Apply(EffectStackDic effectStack)
-        {
-            List<(Effect, float)> changes = new List<(Effect, float)>();
-
-            foreach (var (eff, amount) in effectStack)
-            {
-                changes.Add((eff, Apply(eff, amount)));
-            }
-
-            foreach (var (eff, amount) in changes)
-            {
-                effectStack[eff] = amount;
-            }
-        }
-
         protected virtual void EffectsChanged(EffectObject obj, Effect effectAdded, float amount)
         {
-            if (BothEffectsPresent(Effect.Fire, Effect.Water, effectAdded))
+            if (BothEffectsPresent(Effect.Water, Effect.Fire, effectAdded))
             {
                 StatusEffect.Add<Steamed>(obj);
+            }
+
+            if (BothEffectsPresent(Effect.Water, Effect.Plant, effectAdded))
+            {
+                StatusEffect.Add<Bounded>(obj, b => b.Init(amount * 0.5f));
+            }
+
+            if (BothEffectsPresent(Effect.Water, Effect.Wind, effectAdded))
+            {
+                // todo ice
+            }
+
+            if (BothEffectsPresent(Effect.Water, Effect.Electricity, effectAdded))
+            {
+                // todo chain
+            }
+
+            if (BothEffectsPresent(Effect.Fire, Effect.Plant, effectAdded))
+            {
+                StatusEffect.Add<DOT>(obj);
+            }
+
+            if (BothEffectsPresent(Effect.Fire, Effect.Wind, effectAdded))
+            {
+                CombatUtils.Explode(transform.position, 6, 60, 2, Effect.Fire, 10, 0);
+            }
+
+            if (BothEffectsPresent(Effect.Fire, Effect.Electricity, effectAdded))
+            {
+                // todo chain
+            }
+
+            if (BothEffectsPresent(Effect.Plant, Effect.Wind, effectAdded))
+            {
+                // todo aoe heal?
+            }
+
+            if (BothEffectsPresent(Effect.Plant, Effect.Earth, effectAdded))
+            {
+                // todo trap?
+            }
+
+            if (BothEffectsPresent(Effect.Plant, Effect.Electricity, effectAdded))
+            {
+                // todo chain
+            }
+
+            if (BothEffectsPresent(Effect.Earth, Effect.Electricity, effectAdded))
+            {
+                // todo nullify
             }
         }
 

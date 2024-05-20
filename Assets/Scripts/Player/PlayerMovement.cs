@@ -19,11 +19,14 @@ namespace Player
 
         [SerializeField] private float dashMultiplier = 6f;
         [SerializeField] private float dashCooldown = 1.5f;
+        [SerializeField] private TrailRenderer trail;
+
         protected override void Start()
         {
             base.Start();
             _hp = GetComponent<HitPoints>();
             _playerSpeed = speed;
+            trail.emitting = false;
         }
 
         private void Update()
@@ -33,9 +36,9 @@ namespace Player
 
             if (GameInput.KeyboardKeyDown(KeyCode.Space) && Rigidbody.velocity.sqrMagnitude > 1 && _elapsedTime > dashCooldown)
             {
-                _hp.SetInvincible();
-                Rigidbody.AddForce(new Vector2(GameInput.GetAxis("Horizontal"), GameInput.GetAxis("Vertical")).normalized
-                    * dashMultiplier);
+                _hp.SetInvincible(() => trail.emitting = false);
+                trail.emitting = true;
+                Rigidbody.AddForce(new Vector2(GameInput.GetAxis("Horizontal"), GameInput.GetAxis("Vertical")).normalized* dashMultiplier);
                 _elapsedTime = 0;
             }
 

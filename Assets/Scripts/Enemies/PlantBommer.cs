@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using Effects;
 using Player;
-using Projectiles;
 using UnityEngine;
 using Utils;
 
@@ -9,20 +8,11 @@ namespace Enemies
 {
     public class PlantBommer : Enemy
     {
-        [SerializeField]
-        private GameObject plantBarrel;
-
-        [SerializeField]
-        private float runAwayRangeSqr;
-
-        [SerializeField]
-        private float rangeSqr;
-
-        [SerializeField]
-        private float timeToExplode;
-
-        [SerializeField]
-        private Front front;
+        [SerializeField] private float rangeSqr;
+        [SerializeField] private float startExplosion;
+        [SerializeField] private float timeToExplode;
+        [SerializeField] private float explosionRadius;
+        [SerializeField] private int explosionDamage;
 
         private bool _isExploding;
         private HitPoints _player;
@@ -36,26 +26,28 @@ namespace Enemies
 
             Vector2 playerPos = PlayerMovement.PlayerPos;
             Vector2 currPos = transform1.position;
-            Debug.Log((playerPos - currPos).sqrMagnitude);
-            if (!_isExploding)
+
+            if (_isExploding)
             {
-                if (HasLineOfSight(playerPos, currPos, rangeSqr))
+                return;
+            }
+
+            if (HasLineOfSight(playerPos, currPos, rangeSqr))
+            {
+                Vector2 dir = playerPos - currPos;
+                if (dir.sqrMagnitude < startExplosion)
                 {
-                    Vector2 dir = playerPos - currPos;
-                    if (dir.sqrMagnitude < runAwayRangeSqr)
-                    {
-                        Debug.Log("Lmao");
-                        StartCoroutine(Boom());
-                        return;
-                    }
-                    Move(dir, false);
+                    Debug.Log("Lmao");
+                    StartCoroutine(Boom());
+                    return;
                 }
-                else
-                {
-                    Vector2 dir = playerPos - currPos;
-                    dir = GoLeftOrRight(dir, rangeSqr);
-                    Move(dir, false);
-                }
+                Move(dir, false);
+            }
+            else
+            {
+                Vector2 dir = playerPos - currPos;
+                dir = GoLeftOrRight(dir, rangeSqr);
+                Move(dir, false);
             }
         }
 
@@ -64,11 +56,24 @@ namespace Enemies
             _isExploding = true;
             _normalizeVec = Vector2.zero;
             yield return new WaitForSeconds(timeToExplode);
-            if (front is not null && front.CompareTag("Player"))
-                front.GetComponent<HitPoints>().Hp -= 5;
-            GameObject barrel = Instantiate(plantBarrel, transform.position, Quaternion.identity);
-            barrel.GetComponent<HitPoints>().Hp--;
-            Destroy(this.gameObject);
+            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+            foreach (var col in cols)
+            {
+                if (!col.TryGetComponent(out EffectObject effectObject))
+                {
+                    continue;
+                }
+
+                effectObject.Hp -= explosionDamage;
+                effectObject.Apply(Effect.Plant, 10, true);
+            }
+
+            Destroy(gameObject);
+        }
+
+        private void OnDrawGizmosSelected()
+        {
+            Gizmos.DrawWireSphere(transform.position, explosionRadius);
         }
     }
 }

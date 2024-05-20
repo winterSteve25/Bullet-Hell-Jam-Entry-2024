@@ -13,6 +13,7 @@ namespace Utils
         private int _shield;
         private Collider2D _collider;
         private Rigidbody2D _rigidbody;
+        private Action _finishInvinc;
 
         public event Action OnDeath;
         public event Action OnHealed;
@@ -83,15 +84,17 @@ namespace Utils
             if (_elapsedTime > invincibleTime)
             {
                 invincible = false;
+                _finishInvinc?.Invoke();
                 if (_collider is null) return;
                 _collider.excludeLayers = 0;
                 _rigidbody.excludeLayers = 0;
             }
         }
 
-        public void SetInvincible()
+        public void SetInvincible(Action onFinish = null)
         {
             invincible = true;
+            _finishInvinc = onFinish;
             _elapsedTime = 0;
 
             if (_collider is not null)

@@ -86,11 +86,8 @@ MonoBehaviour:
   speed: 0
   inaccuracy: 0
   belongsToRoom: 0
-  runAwayRangeSqr: 0
-  rangeSqr: 200
   projectileSpeed: 10
-  shootCooldown: 20
-  timeBetweenBullets: 0
+  shootCooldown: 1
 --- !u!50 &2002285974086795139
 Rigidbody2D:
   serializedVersion: 4

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Procedural.Delaunay;
 using UnityEngine;
+using Utils;
 using Random = UnityEngine.Random;
 
 namespace Procedural
@@ -38,7 +39,7 @@ namespace Procedural
             {
                 Vector3 pos = new Vector3(rect.xMin, rect.yMin);
                 Gizmos.DrawSphere(pos, 0.5f);
-                Mesh mesh = GenerateQuadMesh(pos, rect.width, rect.height);
+                Mesh mesh = RandomUtils.GenerateQuadMesh(pos, rect.width, rect.height);
                 Gizmos.DrawWireMesh(mesh);
             }
         }
@@ -268,43 +269,6 @@ namespace Procedural
         private static Vector2Int Cast(Vector2 pt)
         {
             return new Vector2Int(Mathf.FloorToInt((pt.x + 10) / 20), Mathf.FloorToInt((pt.y + 10) / 20));
-        }
-
-
-        private static Mesh GenerateQuadMesh(Vector3 bottomLeftCorner, float w, float h)
-        {
-            // Create a new mesh
-            Mesh mesh = new Mesh();
-
-            // Define vertices
-            Vector3[] vertices = new Vector3[4];
-            vertices[0] = bottomLeftCorner; // Bottom-left
-            vertices[1] = bottomLeftCorner + new Vector3(w, 0, 0); // Bottom-right
-            vertices[2] = bottomLeftCorner + new Vector3(0, h, 0); // Top-left
-            vertices[3] = bottomLeftCorner + new Vector3(w, h, 0); // Top-right
-
-            // Define triangles
-            int[] triangles =
-            {
-                0, 2, 1, 1, 2, 3
-            };
-
-            // Define UVs
-            Vector2[] uvs = new Vector2[4];
-            uvs[0] = new Vector2(0, 0);
-            uvs[1] = new Vector2(1, 0);
-            uvs[2] = new Vector2(0, 1);
-            uvs[3] = new Vector2(1, 1);
-
-            // Assign vertices, triangles, and UVs to the mesh
-            mesh.vertices = vertices;
-            mesh.triangles = triangles;
-            mesh.uv = uvs;
-
-            // Recalculate normals for correct shading
-            mesh.RecalculateNormals();
-
-            return mesh;
         }
     }
 }

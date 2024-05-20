@@ -1,23 +1,13 @@
-﻿using System.Collections;
-using Effects;
-using Player;
+﻿using Effects;
 using Projectiles;
 using UnityEngine;
-using Utils;
 
 namespace Enemies
 {
     public class PlantShooter : Enemy
     {
-
-        [SerializeField]
-        private float projectileSpeed;
-
-        [SerializeField]
-        private float shootCooldown;
-
-        [SerializeField]
-        private float timeBetweenBullets;
+        [SerializeField] private float projectileSpeed;
+        [SerializeField] private float shootCooldown;
 
         private float _elapsedTime;
 
@@ -30,16 +20,17 @@ namespace Enemies
             {
                 return;
             }
-            StartCoroutine(Shoot(currPos));
+
+            Shoot(currPos);
         }
-        private IEnumerator Shoot(Vector2 currPos)
+        private void Shoot(Vector2 currPos)
         {
             _elapsedTime = 0;
             var transform1 = transform;
 
             ProjectileManager.Spawn(
                 currPos,
-                Positioner.Circle(8, 1, transform1.eulerAngles.z % 720),
+                Positioner.Circle(8, 1, transform1.eulerAngles.z % 360),
                 Positioner.Outward(currPos),
                 Effect.Plant,
                 10,
@@ -47,14 +38,6 @@ namespace Enemies
                 amount: 8,
                 speed: projectileSpeed
             );
-            yield return new WaitForSeconds(timeBetweenBullets);
-        }
-
-        private void OnCollisionEnter2D(Collision2D other)
-        {
-            if (!other.collider.CompareTag("Player"))
-                return;
-            other.collider.GetComponent<HitPoints>().Hp--;
         }
     }
 }

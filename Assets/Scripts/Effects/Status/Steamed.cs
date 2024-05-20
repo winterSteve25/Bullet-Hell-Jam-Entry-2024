@@ -6,7 +6,7 @@ namespace Effects.Status
 
         protected override bool ShouldEnd(EffectObject effectObject)
         {
-            return true;
+            return false;
         }
 
         protected override void Act(EffectObject effectObject)

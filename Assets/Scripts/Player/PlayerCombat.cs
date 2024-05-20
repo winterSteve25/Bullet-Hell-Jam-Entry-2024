@@ -35,6 +35,7 @@ namespace Player
         [SerializeField] private float explosionRadius;
         [SerializeField] private int explosionDamage;
         [SerializeField] private float explosionForce;
+        [SerializeField] private ParticleSystem healParticles;
 
         [Header("UI")]
         public Slider ammoSlider;
@@ -185,6 +186,7 @@ namespace Player
             {
                 _hp.Hp += healAmount;
                 _effectObject.Apply(Effect.Water, amountElementApplied, true);
+                healParticles.Play();
             }
             else if (ElementSelected == Effect.Fire)
             {
@@ -219,7 +221,7 @@ namespace Player
                     effectObject.Invincible = wasInvincible;
                     effectObject.Apply(Effect.Fire, amountElementApplied, true);
 
-                    AddForce(effectObject.transform.position - transform.position, superNovaForce, effectObject);
+                    CombatUtils.AddForce(effectObject.transform.position - transform.position, superNovaForce, effectObject);
                 }
             }
             else if (ElementSelected == Effect.Plant)
@@ -272,7 +274,7 @@ namespace Player
                         continue;
                     }
 
-                    AddForce(effectObject.transform.position - transform.position, pushForce, effectObject);
+                    CombatUtils.AddForce(effectObject.transform.position - transform.position, pushForce, effectObject);
                     effectObject.Apply(Effect.Wind, amountElementApplied, true);
                 }
             }
@@ -283,46 +285,10 @@ namespace Player
             }
             else if (ElementSelected == Effect.Electricity)
             {
-                Collider2D[] targets = Physics2D.OverlapCircleAll(transform.position, explosionRadius, IgnoreMode.Player.GetLayerMask());
-                foreach (var target in targets)
-                {
-                    if (target is null) continue;
-                    EffectObject effectObject;
-
-                    if (target.TryGetComponent(out EffectObject obj))
-                    {
-                        effectObject = obj;
-                    }
-                    else if (target.TryGetComponent(out ChildEffectObject childEffectObject))
-                    {
-                        effectObject = childEffectObject.Parent;
-                    }
-                    else
-                    {
-                        continue;
-                    }
-
-                    effectObject.Hp -= explosionDamage;
-                    effectObject.Apply(Effect.Fire, amountElementApplied, true);
-
-                    AddForce(effectObject.transform.position - transform.position, explosionForce, effectObject);
-                }
+                CombatUtils.Explode(transform.position, explosionRadius, explosionForce, explosionDamage, Effect.Electricity, amountElementApplied, IgnoreMode.Player.GetLayerMask());
             }
 
             ResetElement();
-        }
-
-        private void AddForce(Vector2 dir, float multiplier, EffectObject obj)
-        {
-            if (!obj.TryGetComponent(out Rigidbody2D rb)) return;
-
-            if (rb.velocity != Vector2.zero)
-            {
-                rb.AddForce(dir * multiplier, ForceMode2D.Impulse);
-            }
-            {
-                rb.AddForce(dir * (multiplier * 0.1f), ForceMode2D.Impulse);
-            }
         }
 
         private void ResetElement()

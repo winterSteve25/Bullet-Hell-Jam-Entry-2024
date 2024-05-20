@@ -69,11 +69,11 @@ MonoBehaviour:
   speed: 4
   inaccuracy: 0
   belongsToRoom: 0
-  plantBarrel: {fileID: 5644413702967607649, guid: a401de7003433db47bed6aeeeff4db82, type: 3}
-  runAwayRangeSqr: 1
   rangeSqr: 300
-  timeToExplode: 1
-  front: {fileID: 7131498145630641167}
+  startExplosion: 5
+  timeToExplode: 0.75
+  explosionRadius: 4
+  explosionDamage: 5
 --- !u!114 &4872985968835340449
 MonoBehaviour:
   m_ObjectHideFlags: 0
