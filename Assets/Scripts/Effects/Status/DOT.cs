@@ -6,6 +6,8 @@ namespace Effects.Status
 {
     public class DOT : StatusEffect
     {
+        private static Sprite _texture;
+
         protected override float TickSpeed => 2f;
 
         private Action<float> _progress;
@@ -13,7 +15,8 @@ namespace Effects.Status
 
         private void Start()
         {
-            StatusEffectsUI.Add(null, new Color());
+            _texture ??= Resources.Load<Sprite>("Sprites/Effect/DOT");
+            (_progress, _delete) = StatusEffectsUI.Add(_texture, Color.white);
         }
 
         protected override bool ShouldEnd(EffectObject effectObject)
@@ -26,10 +29,12 @@ namespace Effects.Status
             effectObject.RemoveEffect(Effect.Fire, 0.2f);
             effectObject.RemoveEffect(Effect.Plant, 0.2f);
             effectObject.Hp--;
+            _progress(1 - Mathf.Min(effectObject.GetAmount(Effect.Fire), effectObject.GetAmount(Effect.Plant)) / 0.2f);
         }
 
         protected override void CleanUp(EffectObject effectObject)
         {
+            _delete();
         }
     }
 }

@@ -30,7 +30,7 @@ namespace Player
             for (int i = 0; i < _effectObject.statusEffects.Count; i++)
             {
                 StatusEffect statusEffect = _effectObject.statusEffects[i];
-                if (statusEffect is Bounded or Steamed)
+                if (statusEffect is Bounded or Blinded)
                 {
                     _effectObject.statusEffects.RemoveAt(i);
                     i--;

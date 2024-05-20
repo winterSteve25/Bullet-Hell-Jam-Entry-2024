@@ -25,7 +25,6 @@ namespace Props
                 if (col.transform == transform) continue;
                 if (col.CompareTag("Walls")) continue;
                 if (!col.TryGetComponent(out EffectObject effectObject)) continue;
-                effectObject.Apply(InheritElement, this.amount, true);
                 effectObject.Apply(effectAdded, amount, true);
 
                 if (col.CompareTag("Barrel"))
@@ -37,6 +36,16 @@ namespace Props
 
         private void OnDeath()
         {
+            Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, radius, LayerMask.GetMask("Enemies", "Player", "Environment"));
+
+            foreach (var col in cols)
+            {
+                if (col.transform == transform) continue;
+                if (col.CompareTag("Walls")) continue;
+                if (!col.TryGetComponent(out EffectObject effectObject)) continue;
+                effectObject.Apply(InheritElement, amount, true);
+            }
+
             // ReSharper disable once Unity.PreferNonAllocApi
             ParticleSystem p = Instantiate(explosionParticle, transform.position, Quaternion.identity);
  #pragma warning disable CS0618 // Type or member is obsolete

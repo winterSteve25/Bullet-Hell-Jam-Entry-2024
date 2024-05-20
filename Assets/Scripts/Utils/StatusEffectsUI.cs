@@ -20,9 +20,9 @@ namespace Utils
         public static (Action<float>, Action) Add(Sprite icon, Color color)
         {
             Slider slider = Instantiate(_instance.prefab, _instance.layout);
-            // Image image = slider.transform.GetChild(2).GetComponent<Image>();
-            // image.sprite = icon;
-            // image.color = color;
+            Image image = slider.transform.GetChild(2).GetComponent<Image>();
+            image.sprite = icon;
+            image.color = color;
             return (value =>
             {
                 slider.DOValue(value, 0.1f);

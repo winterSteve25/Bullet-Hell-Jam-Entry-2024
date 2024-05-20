@@ -283,6 +283,7 @@ MonoBehaviour:
     m_keys: []
     m_values: []
   inheritElement: {fileID: 0}
+  statusEffects: []
 --- !u!114 &6277162298454006789
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -315,7 +316,7 @@ MonoBehaviour:
   bulletSpeed: 20
   bulletPerSecond: 6
   absorptionCooldown: 8
-  absorptionCooldownWhenFail: 3
+  cooldownReducOnMiss: 5
   absorptionBullet: {fileID: 5126318359189883868, guid: 5975543cce43eec4f96866b5e2ac0952, type: 3}
   amountElementApplied: 10
   healAmount: 1

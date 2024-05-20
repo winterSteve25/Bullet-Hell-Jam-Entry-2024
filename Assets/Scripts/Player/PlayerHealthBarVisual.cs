@@ -18,12 +18,14 @@ namespace Player
         {
             _hp = GetComponent<HitPoints>();
             _hp.OnDamaged += HpDecrease;
+            _hp.OnDeath += HpDecrease;
             _hp.OnHealed += HpIncrease;
         }
 
         private void OnDisable()
         {
             _hp.OnDamaged -= HpDecrease;
+            _hp.OnDeath -= HpDecrease;
             _hp.OnHealed -= HpIncrease;
         }
 
