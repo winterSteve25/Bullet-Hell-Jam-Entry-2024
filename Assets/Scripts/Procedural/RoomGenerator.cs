@@ -318,7 +318,6 @@ namespace Procedural
                 {
                     if (dest2.Contains(connection.Item2))
                     {
-                        Debug.LogWarning("Duplicate connection");
                         continue;
                     }
                 }

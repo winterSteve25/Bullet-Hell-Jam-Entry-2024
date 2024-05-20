@@ -32,15 +32,24 @@ namespace Utils
 
     public class SoundsManager : MonoBehaviour
     {
+        private static SoundsManager _instance;
+
         private static AudioSource audioSource;
         public AudioClip[] sounds;
         private static SoundTransfer soundTransfer;
+
         void Start()
         {
+            if (_instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
+
             audioSource = GetComponent<AudioSource>();
             soundTransfer = new SoundTransfer(sounds);
+            DontDestroyOnLoad(gameObject);
         }
-
 
         public static void PlaySound(string keyword)
         {

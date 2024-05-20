@@ -1,3 +1,4 @@
+using Player;
 using UnityEngine;
 
 namespace Utils
@@ -47,7 +48,7 @@ namespace Utils
         private static bool CanInput()
         {
             // implement later to block input in menus and such
-            return true;
+            return !DeathManager.IsDead;
         }
     }
 }

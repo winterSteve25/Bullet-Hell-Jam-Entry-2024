@@ -33,6 +33,11 @@ namespace Projectiles
             return (_, t) => new Vector2(radius * Mathf.Cos(initialRad + t * increments), radius * Mathf.Sin(initialRad + t * increments));
         }
 
+        public static Position Spiral()
+        {
+            return (_, t) => new Vector2();
+        }
+
         public static Position Identity()
         {
             return (currPos, _) => currPos;

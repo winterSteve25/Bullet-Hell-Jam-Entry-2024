@@ -97,16 +97,16 @@ namespace Effects
         {
             if (BothEffectsPresent(Effect.Water, Effect.Fire, effectAdded))
             {
-                StatusEffect.Add<Blinded>(obj, b => b.Init(amount * 0.25f));
-                RemoveEffect(Effect.Water, 10);
-                RemoveEffect(Effect.Fire, 10);
+                StatusEffect.Add<Blinded>(obj, b => b.Init(amount * 0.05f));
+                RemoveEffect(Effect.Water, GetAmount(Effect.Water) * 0.9f);
+                RemoveEffect(Effect.Fire, GetAmount(Effect.Fire) * 0.9f);
             }
 
             if (BothEffectsPresent(Effect.Water, Effect.Plant, effectAdded))
             {
-                StatusEffect.Add<Bounded>(obj, b => b.Init(amount * 0.5f));
-                RemoveEffect(Effect.Water, 10);
-                RemoveEffect(Effect.Plant, 10);
+                StatusEffect.Add<Bounded>(obj, b => b.Init(amount * 0.1f));
+                RemoveEffect(Effect.Water, GetAmount(Effect.Water) * 0.9f);
+                RemoveEffect(Effect.Plant, GetAmount(Effect.Plant) * 0.9f);
             }
 
             if (BothEffectsPresent(Effect.Water, Effect.Wind, effectAdded))

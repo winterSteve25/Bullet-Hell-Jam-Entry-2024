@@ -50,19 +50,25 @@ namespace Utils
         {
             if (!_wasEnabled) return;
             // SoundManager.Play(GameConstants.Sounds.SelectableHover);
-            _rectTransform.DOScale(1.3f, 0.1f).SetEase(Ease.OutCubic);
+            _rectTransform.DOScale(1.3f, 0.1f)
+                .SetEase(Ease.OutCubic)
+                .SetUpdate(true);
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
             if (!_wasEnabled) return;
-            _rectTransform.DOScale(1f, 0.1f).SetEase(Ease.InCubic);
+            _rectTransform.DOScale(1f, 0.1f)
+                .SetEase(Ease.InCubic)
+                .SetUpdate(true);
         }
 
         public void OnPointerDown(PointerEventData eventData)
         {
             if (!_wasEnabled) return;
-            _rectTransform.DOScale(1.5f, 0.1f).SetEase(Ease.OutCubic);
+            _rectTransform.DOScale(1.5f, 0.1f)
+                .SetEase(Ease.OutCubic)
+                .SetUpdate(true);
             if (_text is not null)
             {
                 _text.color = Color.gray;
@@ -70,7 +76,7 @@ namespace Utils
 
             if (doShake)
             {
-                _shake = _rectTransform.DOLocalRotate(new Vector3(0, 0, 3f), 0.1f).SetLoops(-1, LoopType.Yoyo);
+                _shake = _rectTransform.DOLocalRotate(new Vector3(0, 0, 3f), 0.1f).SetLoops(-1, LoopType.Yoyo).SetUpdate(true);
             }
         }
 
@@ -79,10 +85,12 @@ namespace Utils
             if (!_wasEnabled) return;
             if (Math.Abs(_rectTransform.localScale.x - 1) > 0.1f)
             {
-                _rectTransform.DOScale(1.3f, 0.1f).SetEase(Ease.OutCubic);
+                _rectTransform.DOScale(1.3f, 0.1f).SetEase(Ease.OutCubic)
+                    .SetUpdate(true);
             }
 
-            _rectTransform.DOLocalRotate(Vector3.zero, 0.1f);
+            _rectTransform.DOLocalRotate(Vector3.zero, 0.1f)
+                .SetUpdate(true);
             if (_text is not null)
             {
                 _text.color = Color.white;

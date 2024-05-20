@@ -19,7 +19,8 @@ namespace Utils
         {
             _perlin.m_AmplitudeGain = intensity;
             DOTween.To(() => _perlin.m_AmplitudeGain, f => _perlin.m_AmplitudeGain = f, 0, time)
-                .SetEase(ease);
+                .SetEase(ease)
+                .SetUpdate(true);
         }
     }
 }
