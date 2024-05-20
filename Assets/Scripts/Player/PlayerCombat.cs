@@ -23,7 +23,7 @@ namespace Player
         private float absorptionCooldown;
 
         [SerializeField]
-        private float absorptionCooldownWhenFail;
+        private float cooldownReducOnMiss;
 
         [SerializeField]
         private AbsorptionBullet absorptionBullet;
@@ -74,21 +74,18 @@ namespace Player
         [SerializeField]
         private float explosionForce;
 
-        [SerializeField]
-        private ParticleSystem healParticles;
-        [SerializeField]
-        private ParticleSystem absorpParticles;
+        [SerializeField] private ParticleSystem healParticles;
+        [SerializeField] private ParticleSystem absorpParticles;
 
         [Header("UI")]
         public Slider ammoSlider;
         public Image effectIcon;
-        public Image absBulletCoolDown;
+        public Slider absBulletCoolDown;
 
         private float _bulletCooldown;
         private float _lastShot;
-        private float _lastAbsorb;
+        private float _absorptionCountdown;
         private bool _absorptionMode;
-        private bool _waitingForHit;
 
         private static HitPoints _hp;
         private EffectObject _effectObject;
@@ -135,7 +132,6 @@ namespace Player
         {
             _blankElement = Resources.Load<Sprite>("Sprites/square");
             _bulletCooldown = 1 / bulletPerSecond;
-            _lastAbsorb = absorptionCooldown;
             _lastShot = _bulletCooldown;
             _hp = GetComponent<HitPoints>();
             _effectObject = GetComponent<EffectObject>();
@@ -147,18 +143,19 @@ namespace Player
         {
             float dt = Time.deltaTime;
             _lastShot += dt;
-            if (!_absorptionMode && !_waitingForHit)
+
+            if (!_absorptionMode)
             {
-                _lastAbsorb += dt;
+                _absorptionCountdown -= dt;
             }
 
-            if (_lastAbsorb / absorptionCooldown >= 1)
+            if ((absorptionCooldown - _absorptionCountdown) / absorptionCooldown >= 1)
             {
-                absBulletCoolDown.fillAmount = 0;
+                absBulletCoolDown.value = 1;
             }
             else
             {
-                absBulletCoolDown.fillAmount = _lastAbsorb / absorptionCooldown;
+                absBulletCoolDown.value = (absorptionCooldown - _absorptionCountdown) / absorptionCooldown;
             }
 
             if (_absorptionMode)
@@ -177,10 +174,9 @@ namespace Player
                     bullet.Init(
                         hit =>
                         {
-                            _waitingForHit = false;
                             if (hit is null)
                             {
-                                _lastAbsorb = absorptionCooldown - absorptionCooldownWhenFail;
+                                _absorptionCountdown -= cooldownReducOnMiss;
                                 return;
                             }
                             SoundsManager.PlaySound("absorp");
@@ -192,7 +188,6 @@ namespace Player
                     );
                     absorpParticles.Stop();
                     _absorptionMode = false;
-                    _waitingForHit = true;
                 }
             }
             else
@@ -233,12 +228,12 @@ namespace Player
 
             if (ElementSelected is null)
             {
-                if (_lastAbsorb < absorptionCooldown)
+                if (_absorptionCountdown > 0)
                 {
                     return;
                 }
 
-                _lastAbsorb = 0;
+                _absorptionCountdown = absorptionCooldown;
                 _absorptionMode = true;
                 SoundsManager.PlaySound("absorp_mode");
                 absorpParticles.Play();

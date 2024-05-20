@@ -86,6 +86,7 @@ MonoBehaviour:
   speed: 1
   inaccuracy: 0
   belongsToRoom: 0
+  onDeath: {fileID: 0}
   rangeSqr: 200
   projectileSpeed: 10
 --- !u!50 &2002285974086795139

@@ -1,8 +1,20 @@
-﻿namespace Effects.Status
+﻿using System;
+using UnityEngine;
+using Utils;
+
+namespace Effects.Status
 {
     public class DOT : StatusEffect
     {
         protected override float TickSpeed => 2f;
+
+        private Action<float> _progress;
+        private Action _delete;
+
+        private void Start()
+        {
+            StatusEffectsUI.Add(null, new Color());
+        }
 
         protected override bool ShouldEnd(EffectObject effectObject)
         {

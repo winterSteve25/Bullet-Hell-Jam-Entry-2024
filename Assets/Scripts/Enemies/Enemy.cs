@@ -1,5 +1,4 @@
-﻿using DG.Tweening;
-using Effects;
+﻿using Effects;
 using Player;
 using Procedural;
 using Projectiles;
@@ -44,8 +43,10 @@ namespace Enemies
         protected virtual void OnDeath()
         {
             Droplet d = Instantiate(_dropletPrefab);
-            d.Init(EffectObject.InheritElement, transform.position);
+            var position = transform.position;
+            d.Init(EffectObject.InheritElement, position);
             RoomTrigger.TriggerEnemyDiedInRoom(belongsToRoom);
+            ParticlesUtils.EnemyDeath(position, EffectObject.InheritElement.Color);
             Destroy(gameObject);
         }
 

@@ -12,6 +12,8 @@ namespace Effects
         [SerializeField] private EffectStackDic effects;
         [SerializeField] private Effect inheritElement;
 
+        public List<StatusEffect> statusEffects;
+
         protected HitPoints HitPoints;
         public int Hp
         {

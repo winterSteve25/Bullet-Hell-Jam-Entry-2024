@@ -83,7 +83,7 @@ namespace Enemies
 
                     if (col.collider is not null)
                     {
-                        lazer.SetPosition(1, col.point * 1.05f);
+                        lazer.SetPosition(1, col.point);
                     }
                     else
                     {
@@ -120,7 +120,7 @@ namespace Enemies
                     chargeParticlesMain.startSpeed = c;
                 });
 
-            yield return new WaitForSeconds(chargeTime * 0.96f);
+            yield return new WaitForSeconds(chargeTime * 0.955f);
 
             _readyToFire = true;
             DOTween.To(() => telegraph.widthMultiplier, f => telegraph.widthMultiplier = f, 0.1f, chargeTime * 0.01f)

@@ -225,7 +225,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 07bb406b82de40ab8d3f99f859f4caf5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHp: 8
+  maxHp: 6
   hp: 0
   invincibleTime: 0
   invincible: 0
@@ -262,9 +262,10 @@ MonoBehaviour:
   speed: 2
   inaccuracy: 0.15
   belongsToRoom: 0
+  onDeath: {fileID: 0}
   runAwayRangeSqr: 70
   rangeSqr: 200
-  projectileSpeed: 20
+  projectileSpeed: 15
   shootCooldown: 0.5
   timeBetweenBullets: 0.15
   front: {fileID: 1931589044914148992}

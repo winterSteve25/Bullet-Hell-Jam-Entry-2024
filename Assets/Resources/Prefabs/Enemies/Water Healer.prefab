@@ -95,7 +95,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 8
+    m_Bits: 384
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0
@@ -115,6 +115,7 @@ MonoBehaviour:
   speed: 4
   inaccuracy: 0
   belongsToRoom: 0
+  onDeath: {fileID: 0}
   healRadius: 4
   healCooldown: 8
   healAmount: 2
@@ -189,7 +190,7 @@ CircleCollider2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 384
   m_LayerOverridePriority: 0
   m_ForceSendLayers:
     serializedVersion: 2

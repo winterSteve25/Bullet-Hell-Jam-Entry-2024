@@ -1,4 +1,5 @@
 ﻿using System.Collections;
+using DG.Tweening;
 using Effects;
 using Player;
 using UnityEngine;
@@ -15,7 +16,13 @@ namespace Enemies
         [SerializeField] private int explosionDamage;
 
         private bool _isExploding;
-        private HitPoints _player;
+        private SpriteRenderer _sprite;
+
+        protected override void Start()
+        {
+            base.Start();
+            _sprite = GetComponent<SpriteRenderer>();
+        }
 
         private void Update()
         {
@@ -37,7 +44,6 @@ namespace Enemies
                 Vector2 dir = playerPos - currPos;
                 if (dir.sqrMagnitude < startExplosion)
                 {
-                    Debug.Log("Lmao");
                     StartCoroutine(Boom());
                     return;
                 }
@@ -55,8 +61,17 @@ namespace Enemies
         {
             _isExploding = true;
             _normalizeVec = Vector2.zero;
+
+            transform.DOScale(new Vector3(1.5f, 1.5f, 1), timeToExplode * 0.95f)
+                .SetEase(Ease.InCubic);
+
+            _sprite.color = EffectObject.InheritElement.Color;
+            _sprite.DOColor(Color.white, 0.2f)
+                .SetLoops(-1, LoopType.Yoyo);
+
             yield return new WaitForSeconds(timeToExplode);
             Collider2D[] cols = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
+
             foreach (var col in cols)
             {
                 if (!col.TryGetComponent(out EffectObject effectObject))

@@ -13,6 +13,7 @@ namespace Procedural
         public static List<int> Triggered;
         public static event Action<int> EnemyDiedInRoom;
         public static event Action<int> EnteredRoom;
+        public static event Action RoomCompleted;
 
         [SerializeField] private int roomIdx;
 
@@ -117,6 +118,8 @@ namespace Procedural
 
         private void Clear()
         {
+            RoomCompleted?.Invoke();
+
             foreach (var (pos, size) in _fills)
             {
                 _tm.SetTilesBlock(new BoundsInt(pos, size), Enumerable.Range(0, size.x * size.y).Select(_ => (TileBase)null).ToArray());

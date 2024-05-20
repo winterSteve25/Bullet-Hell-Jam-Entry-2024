@@ -179,6 +179,7 @@ MonoBehaviour:
   speed: 0
   inaccuracy: 0
   belongsToRoom: 0
+  onDeath: {fileID: 0}
   projectileSpeed: 15
   shootCooldown: 2
   tail: {fileID: 467086597523694918}
@@ -256,7 +257,7 @@ Rigidbody2D:
     m_Bits: 0
   m_ExcludeLayers:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 384
   m_Interpolate: 0
   m_SleepingMode: 1
   m_CollisionDetection: 0

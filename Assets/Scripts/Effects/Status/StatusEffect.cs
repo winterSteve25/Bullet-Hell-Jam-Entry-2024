@@ -22,6 +22,8 @@ namespace Effects.Status
 
             if (ShouldEnd(EffectObject))
             {
+                CleanUp(EffectObject);
+                EffectObject.statusEffects.Remove(this);
                 Destroy(this);
             }
             else
@@ -40,6 +42,7 @@ namespace Effects.Status
         {
             T s = go.gameObject.AddComponent<T>();
             s.EffectObject = go;
+            go.statusEffects.Add(s);
             init?.Invoke(s);
         }
     }
