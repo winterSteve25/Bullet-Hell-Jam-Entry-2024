@@ -16,9 +16,17 @@ namespace Enemies
         [SerializeField] private float chargeTime;
 
         [SerializeField] private Transform sprite;
+        [SerializeField] private LineRenderer telegraph;
+
 
         private float _lastDash;
         private bool _charging;
+
+        protected override void Start()
+        {
+            base.Start();
+            telegraph.widthMultiplier = 0;
+        }
 
         private void Update()
         {
@@ -56,10 +64,17 @@ namespace Enemies
         {
             _lastDash = 0;
             _charging = true;
+            Vector2 position = transform.position;
+            Vector2 right = transform.right;
+            DOTween.To(() => telegraph.widthMultiplier, f => telegraph.widthMultiplier = f, 0.1f, chargeTime * 0.01f)
+                    .SetEase(Ease.InCubic);
+            telegraph.SetPosition(0, position + right);
+            telegraph.SetPosition(1, position + right * 100);
             sprite.DOScaleY(0.15f, chargeTime)
                 .SetEase(Ease.OutCubic)
                 .OnComplete(() =>
                 {
+                    telegraph.widthMultiplier = 0;
                     Rigidbody.DOMove(Rigidbody.position + (PlayerMovement.PlayerPos - (Vector2)transform.position).normalized * maxDashLength, dashTime)
                         .SetEase(Ease.OutCubic)
                         .OnComplete(() => _charging = false);
