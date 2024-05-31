@@ -22,5 +22,12 @@ namespace Utils
                 .SetEase(ease)
                 .SetUpdate(true);
         }
+
+        public static void ZoomOut(float sizek, float time, Ease ease = Ease.OutCubic)
+        {
+            DOTween.To(() => _cinemachineVirtual.m_Lens.OrthographicSize, f => _cinemachineVirtual.m_Lens.OrthographicSize = f, sizek, time)
+                .SetEase(ease)
+                .SetUpdate(true);
+        }
     }
 }

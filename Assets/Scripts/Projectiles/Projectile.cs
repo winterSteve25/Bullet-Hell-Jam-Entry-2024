@@ -13,6 +13,7 @@ namespace Projectiles
         [SerializeField]
         private SpriteRenderer _renderer;
         private float _elapsedTime;
+        private int _idx;
 
         private Effect _effect;
         private float _effAmount;
@@ -30,6 +31,7 @@ namespace Projectiles
         }
 
         public void Init(
+            int i,
             Positioner.Position position,
             float speed,
             Effect effect,
@@ -48,6 +50,7 @@ namespace Projectiles
 
             // ReSharper disable once Unity.NoNullPropagation
             _renderer.color = effect?.Color ?? Color.white;
+            _idx = i;
             _position = position;
             _effect = effect;
             _effAmount = effAmount;
@@ -63,7 +66,7 @@ namespace Projectiles
         {
             float dt = Time.deltaTime;
             _elapsedTime += dt;
-            Vector2 translation = _position(transform.position, _elapsedTime) * (dt * _speed);
+            Vector2 translation = _position(transform.position, _elapsedTime, _idx) * (dt * _speed);
             transform.Translate(translation);
             transform.DORotate(new Vector3(0, 0, Mathf.Atan2(translation.y, translation.x)), 0.1f);
 

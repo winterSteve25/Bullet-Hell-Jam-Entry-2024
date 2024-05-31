@@ -116,6 +116,7 @@ namespace Procedural
                 }
 
                 RectInt rectInt = new RectInt(spawnRoomAtPos.x, spawnRoomAtPos.y, premadeRoom.Width, premadeRoom.Height);
+                premadeRoom.roomIdx = rooms.Count;
                 PremadeRooms.Add((premadeRoom, rectInt));
                 rooms.Add((rectInt, true));
             }

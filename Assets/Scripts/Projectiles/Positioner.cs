@@ -1,20 +1,32 @@
+using System;
 using UnityEngine;
+using Utils;
 
 namespace Projectiles
 {
     public class Positioner
     {
-        public delegate Vector2 Position(Vector2 currentPosition, float time);
+        public delegate Vector2 Position(Vector2 currentPosition, float time, int index);
 
         public static Position Directional(Vector2 dir)
         {
             dir.Normalize();
-            return (_, _) => dir;
+            return (_, _, _) => dir;
         }
 
         public static Position Outward(Vector2 origin)
         {
-            return (currPos, _) => (currPos - origin).normalized;
+            return (currPos, _, _) => (currPos - origin).normalized;
+        }
+
+        public static Position Outward(Vector2 origin, float rot)
+        {
+            return (currPos, _, _) => (currPos - origin).normalized.Rotate(rot);
+        }
+
+        public static Position Sin()
+        {
+            return (_, _, i) => new Vector2(Mathf.Sin(i), Mathf.Sin(i));
         }
 
         public static Position Fan(Vector2 direction, float radius, float spanOverDegrees, int numberOfBullets)
@@ -23,34 +35,61 @@ namespace Projectiles
             float angle = Mathf.Atan2(direction.y, direction.x);
             angle -= spanOverRad / 2;
             float increments = spanOverRad / numberOfBullets;
-            return (_, t) => new Vector2(radius * Mathf.Cos(angle + t * increments), radius * Mathf.Sin(angle + t * increments));
+            return (_, _, i) => new Vector2(radius * Mathf.Cos(angle + i * increments), radius * Mathf.Sin(angle + i * increments));
         }
 
         public static Position Circle(int numberOfBullets, float radius, float initialRad = 0)
         {
             float spanOverRad = Mathf.PI * 2;
             float increments = spanOverRad / numberOfBullets;
-            return (_, t) => new Vector2(radius * Mathf.Cos(initialRad + t * increments), radius * Mathf.Sin(initialRad + t * increments));
+            return (_, _, i) => new Vector2(radius * Mathf.Cos(initialRad + i * increments), radius * Mathf.Sin(initialRad + i * increments));
+        }
+
+        public static Position Polar(float spanOver, int numberOfBullets, Func<float, float> polarFunction, float initialRad = 0)
+        {
+            float spanOverRad = spanOver;
+            float increments = spanOverRad / numberOfBullets;
+            return (_, _, i) =>
+            {
+                float theta = initialRad + i * increments;
+                float function = polarFunction(theta);
+                return new Vector2(function * Mathf.Cos(theta), function * Mathf.Sin(theta));
+            };
+        }
+
+        public static Position Polar(float spanOver, int numberOfBullets, Func<Vector2, float, float, Vector2> polarFunction, float initialRad = 0)
+        {
+            float spanOverRad = spanOver;
+            float increments = spanOverRad / numberOfBullets;
+            return (curr, t, i) =>
+            {
+                float theta = initialRad + i * increments;
+                return polarFunction(curr, t, theta);
+            };
         }
 
         public static Position Spiral()
         {
-            return (_, t) => new Vector2();
+            return (pos, _, i) =>
+            {
+                float r = i / pos.magnitude * 2;
+                return new Vector2(r * Mathf.Cos(r), r * Mathf.Sin(r));
+            };
         }
 
         public static Position Identity()
         {
-            return (currPos, _) => currPos;
+            return (currPos, _, _) => currPos;
         }
 
         public static Position Zero()
         {
-            return (_, _) => Vector2.zero;
+            return (_, _, _) => Vector2.zero;
         }
 
         public static Position Homing(Transform transform)
         {
-            return (currentPos, _) => ((Vector2)transform.position - currentPos).normalized;
+            return (currentPos, _, _) => ((Vector2)transform.position - currentPos).normalized;
         }
     }
 }

@@ -50,7 +50,7 @@ namespace Enemies
 
                 ProjectileManager.Spawn(
                     pos,
-                    (_, _) => child.up,
+                    (_, _, _) => child.up,
                     Positioner.Outward(pos),
                     Effect.Fire,
                     10,

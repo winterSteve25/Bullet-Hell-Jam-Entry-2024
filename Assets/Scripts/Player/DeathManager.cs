@@ -1,7 +1,6 @@
 ﻿using DG.Tweening;
 using EasyTransition;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using Utils;
 
 namespace Player
@@ -44,7 +43,8 @@ namespace Player
             IsDead = true;
 
             DOTween.To(() => Time.timeScale, f => Time.timeScale = f, 0, 0.5f)
-                .SetEase(Ease.OutQuad);
+                .SetEase(Ease.OutQuad)
+                .SetUpdate(true);
 
             canvas.interactable = true;
             canvas.blocksRaycasts = true;

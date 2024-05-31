@@ -2,6 +2,7 @@ using System;
 using Effects;
 using UnityEngine;
 using UnityEngine.Pool;
+using Random = System.Random;
 
 namespace Projectiles
 {
@@ -52,8 +53,30 @@ namespace Projectiles
             for (int i = 0; i < amount; i++)
             {
                 Projectile projectile = Instance._projectiles.Get();
-                projectile.transform.position = position + offset(position, i);
-                projectile.Init(positioner, speed, effect, effAmount, o => Instance._projectiles.Release(o), ignoreMode.GetLayerMask(), onHit: onHit, onHitAny: onHitAnyObject);
+                projectile.transform.position = position + offset(position, 0, i);
+                projectile.Init(i, positioner, speed, effect, effAmount, o => Instance._projectiles.Release(o), ignoreMode.GetLayerMask(), onHit: onHit, onHitAny: onHitAnyObject);
+            }
+        }
+
+
+        public static void Spawn(
+            Vector2 position,
+            Positioner.Position offset,
+            Positioner.Position positioner,
+            Effect[] effect,
+            float effAmount,
+            IgnoreMode ignoreMode,
+            int amount = 5,
+            float speed = 1f,
+            Action<EffectObject> onHit = null,
+            Action<GameObject> onHitAnyObject = null
+        )
+        {
+            for (int i = 0; i < amount; i++)
+            {
+                Projectile projectile = Instance._projectiles.Get();
+                projectile.transform.position = position + offset(position, 0, i);
+                projectile.Init(i, positioner, speed, effect[UnityEngine.Random.Range(0, effect.Length)], effAmount, o => Instance._projectiles.Release(o), ignoreMode.GetLayerMask(), onHit: onHit, onHitAny: onHitAnyObject);
             }
         }
     }

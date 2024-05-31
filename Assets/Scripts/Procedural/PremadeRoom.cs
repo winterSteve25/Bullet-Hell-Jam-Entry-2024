@@ -13,6 +13,8 @@ namespace Procedural
         public int Width => width;
         public int Height => height;
 
+        public int roomIdx;
+
         #if UNITY_EDITOR
         private void OnDrawGizmos() {
             Vector3[] points = new Vector3[8] {

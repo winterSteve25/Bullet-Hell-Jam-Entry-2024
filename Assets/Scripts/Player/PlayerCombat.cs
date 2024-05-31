@@ -1,3 +1,4 @@
+using System;
 using DG.Tweening;
 using Effects;
 using Effects.Status;
@@ -137,6 +138,17 @@ namespace Player
             _effectObject = GetComponent<EffectObject>();
             ammoSlider.value = 0;
             effectIcon.sprite = _blankElement;
+            _hp.OnDamaged += OnDamage;
+        }
+
+        private void OnDisable()
+        {
+            _hp.OnDamaged -= OnDamage;
+        }
+
+        private void OnDamage()
+        {
+            _hp.SetInvincible();
         }
 
         private void Update()
